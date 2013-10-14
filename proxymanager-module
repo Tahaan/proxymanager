@@ -1,0 +1,114 @@
+#!/bin/bash
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# ProxyManager Module enable/disable script
+[ -f ~/.proxymanrc ] && . ~/.proxymanrc
+. /etc/proxymanager.conf
+
+cd $PM_INSTALL_DIR
+if [ "$1" == list ]
+then
+   cd $PM_INSTALL_DIR/enable
+   echo Root Modules Enabled via links in $( pwd )
+   ls -1L suE* | cat -n
+   echo User modules enabled via links in $( pwd )
+   [ -d "$PM_USERMODULES" ] && cd $PM_USERMODULES
+   ls -1L E* | cat -n
+elif [ "$1" == "avail" ]
+then
+   cd modules
+   echo Available ProxyManager modules in $( pwd )
+   ls -1L  | cat -n
+else
+   MODULE="$2"
+   if [ ! -f modules/$MODULE ]
+   then
+       echo Error: Specified module \"$MODULE\" is invalid.
+   else 
+       case "$MODULE" in
+          cntlm|root*|sys*)
+              PREFIX=su ;;
+          *)  PREFIX="" ;;
+       esac
+       case "$MODULE" in
+          cntlm)
+              ENORDER=00
+              DISORDR=99
+              ;;
+          sys*)
+              ENORDER=01
+              DISORDR=90
+              ;;
+          root*)
+              ENORDER=05
+              DISORDR=80
+              ;;
+          kde|gnome)
+              ENORDER=02
+              DISORDR=48
+              ;;
+          bashrc|wgetrc|curlrc)
+              ENORDER=03
+              DISORDR=47
+              ;;
+          virtualbox|s3cmd|dropbox)
+              ENORDER=04
+              DISORDR=46
+              ;;
+          *)
+              ENORDER=09
+              DISORDR=41
+              ;;
+       esac
+
+       cd $PM_INSTALL_DIR
+       case "$1" in
+       enable)
+          # Activate Module
+          if [ ! -f enable/${PREFIX}E*${MODULE} ]
+          then
+             BASE_E_NM=${PREFIX}E${ENORDER}${MODULE}
+             EXISTING_E=$( eval echo "enable/X${PREFIX}E"*"${MODULE}" )
+             EE_UNX=${EXISTING_E/\/X${PREFIX}E/\/${PREFIX}E}
+             [ -f $EXISTING_E ] && mv -v $EXISTING_E ${EE_UNX} || \
+                ln -vs ../modules/$MODULE enable/${BASE_E_NM}
+          fi
+
+          if [ ! -f disable/${PREFIX}D*${MODULE} ]
+          then
+             EXISTING_D=$( eval echo "disable/X${PREFIX}D"*"${MODULE}" )
+             BASE_D_NM=${PREFIX}D${DISORDR}${MODULE}
+             ED_UNX=${EXISTING_D/\/X${PREFIX}D/\/${PREFIX}D}
+             [ -f $EXISTING_D ] && mv -v $EXISTING_D ${ED_UNX} || \
+                ln -vs ../modules/$MODULE disable/${BASE_D_NM}
+          fi
+          ;;
+       disable)
+          # De-activate module
+          EXISTING_E=$( eval echo "enable/${PREFIX}E"*"${MODULE}" )
+          EE_XED=${EXISTING_E/\/${PREFIX}E/\/X${PREFIX}E}
+          [ -f ${EXISTING_E} ] && mv -v ${EXISTING_E} ${EE_XED}
+          EXISTING_D=$( eval echo "disable/${PREFIX}D"*"${MODULE}" )
+          ED_XED=${EXISTING_D/\/${PREFIX}D/\/X${PREFIX}D}
+          [ -f ${EXISTING_D} ] && mv -v ${EXISTING_D} ${ED_XED}
+          ;;
+       *)
+          echo "Error: usage Error: No valid option specified" >&2
+          echo "Usage: " >&2
+          echo " Listing Available modules" >&2
+          echo "       proxymanager-module avail" >&2
+          echo " Listing Enabled modules" >&2
+          echo "       proxymanager-module list" >&2
+          echo " Enabling or Disabling a module" >&2
+          echo "       proxymanager-module [enable|disable] module" >&2
+          echo "" >&2
+          echo "Refer to README for more information" >&2
+          exit 2
+       esac
+   fi
+fi
+

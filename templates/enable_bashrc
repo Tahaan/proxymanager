@@ -1,0 +1,11 @@
+MASTER_PROXY="://localhost:3128"
+export no_proxy=localhost,127.0.0.0/8,*.local
+export NO_PROXY=localhost,127.0.0.0/8,*.local
+export all_proxy=socks${MASTER_PROXY}
+export ALL_PROXY=socks${MASTER_PROXY}
+export http_proxy=http${MASTER_PROXY}
+export HTTP_PROXY=http${MASTER_PROXY}
+export ftp_proxy=http${MASTER_PROXY}
+export FTP_PROXY=http${MASTER_PROXY}
+export https_proxy=http${MASTER_PROXY}
+export HTTPS_PROXY=http${MASTER_PROXY}

@@ -1,0 +1,26 @@
+#!/bin/sh
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# ProxyManager module to stop/start cntlm
+# Requires root priv to affect Global System Configuration
+
+case "$1" in
+  on)
+    echo Starting CNTLM
+    #start cntlm
+    /etc/init.d/cntlm start
+    ;;
+  off)
+    echo Stopping CNTLM
+    #stop cntlm
+    /etc/init.d/cntlm stop
+    ;;
+  check)
+    CNTLM_CHECK=`/etc/init.d/cntlm status`
+    echo CNTLM: "$CNTLM_CHECK"
+    ;;
+esac

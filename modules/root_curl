@@ -1,0 +1,35 @@
+#!/bin/sh
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# ProxyManager module for Root user .curlrc profile
+# Usefull on Yast based systems (eg OpenSUSE)
+
+. /etc/proxymanager.conf
+RCURL_CF=~root/.curlrc
+TEMPFILE=/tmp/pon.rcurl
+[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
+
+case "$1" in
+  on)
+    echo Enabling for Root curlrc \(eg for Yast\)
+    grep -v "^proxy =" $RCURL_CF > $TEMPFILE
+    cat $PM_INSTALL_DIR/templates/enable_curl >> $TEMPFILE
+    mv $TEMPFILE $RCURL_CF
+    ;;
+  off)
+    echo Disabling proxy for Root curlrc
+    if [ -f $RCURL_CF ]
+    then
+        grep -v "^proxy =" $RCURL_CF > $TEMPFILE
+        mv $TEMPFILE $RCURL_CF
+    fi
+    ;;
+  check)
+    RCURL_CHECK=$(grep -c proxy $RCURL_CF 2>/dev/null) || RCURL_CHECK=None
+    echo Root Curl-RC: $RCURL_CHECK
+esac
+

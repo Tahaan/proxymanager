@@ -1,0 +1,46 @@
+#!/bin/bash
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# This ProxyManager module switches the KDE global Proxy setting on and off for
+# compliant applications.
+
+# Note: This module requires the KDE global proxy setting to be manually set 
+# once
+
+KDE_CF=$PM_USERHOME/.kde/share/config/kioslaverc
+[ -d $PM_USERHOME/.kde4 ] && KDE_CF=$PM_USERHOME/.kde4/share/config/kioslaverc
+
+if [ -f "$KDE_CF" ]
+then
+
+    switch_kde() {
+       sed -ie "s/ProxyType=./ProxyType=$1/" $KDE_CF
+       dbus-send --type=signal /KIO/Scheduler org.kde.KIO.Scheduler.reparseSlaveConfiguration string:""
+    }
+
+    case "$1" in
+      on)
+        echo Enabling for KDE global
+        switch_kde 1
+        ;;
+
+      off)
+        echo Disabling for KDE global
+        switch_kde 0
+        ;;
+
+      install)
+         # This will in future set up the proxy by means of a template
+         cp $PM_INSTALL_DIR/templates/enable_kde ${KDE_CF}
+         ;;
+
+      check)
+        KDE_CHECK=$(grep -c ProxyType=1 $KDE_CF ) || KDE_CHECK=None
+        echo "KDE: $KDE_CHECK"
+        ;;
+    esac
+fi

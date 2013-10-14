@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See README file for contact and additional information and COPYING for license
+
+[ -f /etc/proxymanager.conf ] && . /etc/proxymanager.conf
+DEFAULTDIR=${PM_INSTALL_DIR:-/usr/local/proxymanager}
+
+printf "Enter install dir: [$DEFAULTDIR] : "
+read SPECIFIED_DIR
+NEW_INSTALL_DIR="${SPECIFIED_DIR:-$DEFAULTDIR}"
+
+if [ ! -x "$NEW_INSTALL_DIR/proxymanager" ]
+then
+   echo '  ERROR: proxymanager not found at "'$NEW_INSTALL_DIR/proxymanager'" - aborting!'
+   exit 2
+fi
+
+cat <<CONFEND > /etc/proxymanager.conf
+PM_INSTALL_DIR=$NEW_INSTALL_DIR
+PM_USERNAME=\${SUDO_USER:-\$USER}
+PM_USERHOME=\`eval echo ~\$PM_USERNAME\`
+PM_PROXY_HOST=localhost
+PM_PROXY_PORT=3128
+# unset PM_USERMODULES
+CONFEND
+
+cat <<ALIAS_NOTE
+
+Copy-paste these alias definitions to your Shell profile (eg .bashrc)
+#--- Cut below this line ---
+alias p-on="'$NEW_INSTALL_DIR'/proxymanager on"
+alias p-off="'$NEW_INSTALL_DIR'/proxymanager off"
+alias p-check="'$NEW_INSTALL_DIR'/proxymanager check"
+#--- Cut above this line ---
+ALIAS_NOTE

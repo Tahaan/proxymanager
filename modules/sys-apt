@@ -1,0 +1,31 @@
+#!/bin/sh
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# ProxyManager module to set System-wide proxy for APT
+# This works for Muon, Synaptic, etc that use apt / apt-get as backend
+
+# Note: Existing apt processes needs to be restarted for this setting be used
+
+# Run with root priv to affect Global System Configuration
+
+. /etc/proxymanager.conf
+APT_CF=/etc/apt/apt.conf.d/00pon_proxy
+
+case "$1" in
+  on)
+    echo Enabling for APT
+    cp $PM_INSTALL_DIR/templates/enable_apt $APT_CF
+    ;;
+  off)
+    echo Disabling for APT
+    [ -f "$APT_CF" ] && rm $APT_CF
+    ;;
+  check)
+    APT_CHECK=$(grep -ci [^#]*proxy $APT_CF 2>/dev/null ) || APT_CHECK=None
+    echo APT: $APT_CHECK
+    ;;
+esac

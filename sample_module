@@ -1,0 +1,64 @@
+#!/bin/sh
+# This file is part of ProxyManager.  It is a tempalte for writing a new
+# modules as if there are not enought working examples in the modules
+# directory (Hint Hint)
+
+# Copyright YEAR YOUR-NAME-HERE
+# See the README.module file for contact and additional information
+# NOTE:  For modules contributed from the community I imagine there will
+# be separate README files.  If those moduels become part of the main
+# branch, and with your permission, I would considder adding the neccesary
+# information, as well as attribution, to the main README file.  Or not.
+
+# ProxyManager module to manage proxy setting for MyApplication
+# This works for bla bla bla...
+
+# If this module is a user-specific module, remove this and the next line
+# Run with root priv to affect Global System Configuration
+
+# System (root priv) modules need to source the main config file.  This
+# doesn't really harm normal modules.
+. /etc/proxymanager.conf
+
+# Specify path to config file for this application
+# For user modules you can use PM_USERNAME, eg:
+# MODULEX_CF=$PM_USERHOME/.wgetrc
+MODULEX_CF=....  
+
+# If needed give it a Temp work file
+TEMPFILE=/tmp/pon.MODULE
+# And make sure it is clean
+rm $TEMPFILE || exit 3
+
+# History lesson:  Why do I see "pon" everywhere?
+# Because this whole system started off as a shell alias called "pon", short
+# for "proxy on", and misnamed because it also turned the proxy settings off.
+
+case "$1" in
+  on)
+    echo Enabling for MyApplication
+    # Remove Old Proxy settings from Application Config file
+    [ -f $MODULEX_CF ] && grep -v "^[^#].*_proxy" $MODULEX_CF > $TEMPFILE
+    # Add Entried from the Template to the New Config File
+    cat $PM_INSTALL_DIR/templates/enable_MyApplication >> $TEMPFILE
+    # Overwrite the main config file 
+    mv $TEMPFILE $MODULEX_CF
+    # And maybe signal the application
+    kill -HUP $( pgrep MyApplication )
+    ;;
+  off)
+    echo Disabling for MyApplication
+    # Remove any proxy settings from Application Config file
+    [ -f $MODULEX_CF ] && grep -v "^[^#].*_proxy" $MODULEX_CF > $TEMPFILE
+    # Overwrite the main config file 
+    mv $TEMPFILE $MODULEX_CF
+    # And maybe signal the application
+    kill -HUP $( pgrep MyApplication )
+    ;;
+  check)
+    # Check whether config file indicates that proxy is to be used
+    MODULEX_CHECK=$(grep -ci [^#]*proxy $MODULEX_CF 2>/dev/null ) || MODULEX_CHECK=None
+    # And report on the findings
+    echo MyApplication: $MODULEX_CHECK
+    ;;
+esac

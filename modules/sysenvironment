@@ -1,0 +1,41 @@
+#!/bin/sh
+# ProxyMaanger module for system default proxy setting
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# This works for many desktop applications and services but requires logout/login
+# Generally requires a restart for most existing processes.
+
+SYSDEFAULT_CONFIG=/etc/environment
+. /etc/proxymanager.conf
+TEMPFILE=/tmp/pon.environment
+[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
+
+case "$1" in
+  on)
+    echo Enabling for System Environment Default
+    grep -vi "_proxy=" $SYSDEFAULT_CONFIG > $TEMPFILE
+    cat $PM_INSTALL_DIR/templates/enable_environment >> $TEMPFILE
+    mv $TEMPFILE $SYSDEFAULT_CONFIG
+    ;;
+  off)
+    echo Disabling for System Environment Default
+    grep -vi "_proxy=" $SYSDEFAULT_CONFIG > $TEMPFILE
+    mv $TEMPFILE $SYSDEFAULT_CONFIG
+    ;;
+  check)
+    SYSDEFAULT_CHECK=$(grep -ci _proxy.*3128 $SYSDEFAULT_CONFIG 2>/dev/null) || SYSDEFAULT_CHECK=None
+    echo Sys Environment Default: $SYSDEFAULT_CHECK
+
+    #set -vx
+    #SESMGRPID=$(ps -e -o pid,cmd |grep "[s]ession" |awk '{print $1}')
+    #[ ! -f /proc/$SESMGRPID/environ ] && RUNNINGSESS="Not Running" || RUNNINGSESS=$(strings /proc/$SESMGRPID/environ |grep -ci _proxy)
+
+    #SYSENV_CHECK=$(grep -ci http.*_proxy= $SYSENV_CONFIG 2>/dev/null) || SYSENV_CHECK=None
+    #echo Session Manager Environment: $SYSENV_CHECK \( Active Env=$RUNNINGSESS \)
+    #set +vx
+    ;;
+esac

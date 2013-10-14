@@ -1,0 +1,14 @@
+ProxyUrlDisplayFlags=0
+
+[$Version]
+update_info=kioslave.upd:kde2.2/r1,kioslave.upd:kde2.2/r2,kioslave.upd:kde2.2/r3
+
+[Proxy Settings]
+NoProxyFor=
+Proxy Config Script=
+ProxyType=1
+ReversedException=false
+ftpProxy=http://localhost 3128
+httpProxy=http://localhost 3128
+httpsProxy=http://localhost 3128
+socksProxy=http://localhost 3128

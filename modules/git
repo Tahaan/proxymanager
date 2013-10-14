@@ -1,0 +1,27 @@
+#!/bin/bash
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# This ProxyManager module switches the git global Proxy setting on or off
+
+GIT_CF=$PM_USERHOME/.gitconfig
+
+case "$1" in
+  on)
+    echo Enabling for Git global
+    git config --global http.proxy http://${PM_PROXY_HOST}:${PM_PROXY_PORT}
+    ;;
+
+  off)
+    echo Disabling for Git global
+    git config --global http.proxy ""
+    ;;
+
+  check)
+    GIT_CHECK=$( git config --global http.proxy | grep -c http ) || GIT_CHECK=None
+    echo "Git: $GIT_CHECK"
+    ;;
+esac

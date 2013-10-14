@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# ProxyManager On/Off master script
+
+[ -f ~/.proxymanrc ] && . ~/.proxymanrc
+. /etc/proxymanager.conf
+PM_VERSION="Alpha 0.1"
+
+cd $PM_INSTALL_DIR
+case "$1" in
+   on|check)
+      cd $PM_INSTALL_DIR/enable
+      # First run all the modules that require root privs
+      for MODULE in suE*
+      do
+         sudo ./$MODULE $1
+      done
+
+      # Next run all the standard user modules
+      [ ! -z "$PM_USERMODULES" ] && [ -d "${PM_USERMODULES}" ] && cd "$PM_USERMODULES" || cd $PM_INSTALL_DIR/enable
+      for MODULE in E*
+      do
+         . ./$MODULE
+      done
+      ;;
+   off)
+      # First run all the unpriviledged user modules
+      [ ! -z "$PM_USERMODULES" ] && [ -d "${PM_USERMODULES}" ] && cd "$PM_USERMODULES" || cd $PM_INSTALL_DIR/disable
+      for MODULE in D*
+      do
+         . ./$MODULE
+      done
+
+      # Next run all the system wide / root modules
+      cd $PM_INSTALL_DIR/disable
+      for MODULE in suD*
+      do
+         sudo ./$MODULE $1
+      done
+
+      ;;
+   install)
+      echo Module configuration not yet implemented.  Sorry....
+      ;;
+   *version)
+      cat << VERSION_MESSAGE
+ProxyManager $PM_VERSION
+Copyright 2013 by Johan Hartzenberg.
+
+See README file for additional information
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+VERSION_MESSAGE
+      exit 2
+      ;;
+   *)
+      echo "Error: ProxyManager usage Error: No valid option specified" >&2
+      echo "Usage: proxymanager [on|off|check]" >&2
+      echo "Refer to README for more information" >&2
+      exit 2
+esac
+

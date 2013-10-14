@@ -1,0 +1,45 @@
+#!/bin/sh
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# ProxyManager module for bashrc environment variables
+# This script simply changes the .bashrc file. Any bash process created after
+# this will see the environment variables which specifies the proxy server to
+# be used, or else unset to disable the use of a proxy server. This script
+# does not make programs use these settings - some do, some don't, and not all
+# programs do so equally well - refer to programs' manual pages for info on
+# support for a proxy server
+
+# Two noteworthy programs that does use this info are:
+#    Google Earth
+#    DropBox client
+
+BASH_CF=$PM_USERHOME/.bashrc
+TEMPFILE=/tmp/p0n.bashrc
+[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
+
+case "$1" in
+  on)
+    echo Enabling for bash
+    grep -vi "_proxy=" $BASH_CF > $TEMPFILE
+    cat $PM_INSTALL_DIR/templates/enable_bashrc >> $TEMPFILE
+    cp $TEMPFILE $BASH_CF
+    echo "    Restart terminal or run exec $SHELL"
+    ;;
+  off)
+    echo Disabling for Bash
+    if [ -f $BASSH_CF ]
+    then
+        grep -vi "_proxy=" $BASH_CF > $TEMPFILE
+        mv $TEMPFILE $BASH_CF
+    fi
+    ;;
+
+  check)
+    BASH_CHECK=$(grep -ci _proxy= $BASH_CF 2>/dev/null) || BASH_CHECK=None
+    echo Bash-RC: $BASH_CHECK \( http_proxy=\"$http_proxy\" \)
+    ;;
+esac

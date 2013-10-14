@@ -1,0 +1,28 @@
+#!/bin/sh
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# ProxyManager module to restart DropBox with/without proxy environment variables
+
+case "$1" in
+  on)
+     echo Enabling for Dropbox
+     . $PM_INSTALL_DIR/templates/enable_bashrc
+     (dropbox stop
+      dropbox start) >/dev/null
+    ;;
+  off)
+     echo Disabling for Dropbox
+     unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
+     (dropbox stop
+     dropbox start) >/dev/null
+    ;;
+  check)
+    DROPBXPID=$(ps -e -o pid,cmd |grep "[d]ropbox" |awk '{print $1}')
+    [ ! -f /proc/$DROPBXPID/environ ] && DROPB_CHECK="Not Running" || DROPB_CHECK=$(strings /proc/$DROPBXPID/environ |grep -ci _proxy)
+    echo Dropbox: $DROPB_CHECK
+    ;;
+esac
