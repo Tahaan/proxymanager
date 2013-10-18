@@ -1,13 +1,13 @@
 #!/bin/sh
 # This file is part of ProxyManager.  It is a tempalte for writing a new
-# modules as if there are not enought working examples in the modules
+# modules as if there are not enough working examples in the modules
 # directory (Hint Hint)
 
 # Copyright YEAR YOUR-NAME-HERE
 # See the README.module file for contact and additional information
 # NOTE:  For modules contributed from the community I imagine there will
-# be separate README files.  If those moduels become part of the main
-# branch, and with your permission, I would considder adding the neccesary
+# be separate README files.  If those moduls become part of the main
+# branch, and with your permission, I would consider adding the necessary
 # information, as well as attribution, to the main README file.  Or not.
 
 # ProxyManager module to manage proxy setting for MyApplication

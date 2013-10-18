@@ -49,10 +49,10 @@ Check Proxy:
   proxymanager check
 
 When running with "on" or with "check" all modules linked in the enable 
-directory is run, in order as they are named.  Root priv modules are executed
+directory is run, in order as they are named.  Root-priv modules are executed
 via sudo and have the "on/off" command line argument explicitly passed to the
-module.  Non-root priv modules are sourced (executed as if they are part of the
-proxy-on script)
+module.  Non root-priv modules are sourced (executed as if they are part of the
+proxymanager script)
 
 When running with "off" the links from the disable sub-directory will be used.
 
@@ -70,28 +70,28 @@ bashrc		Update .bashrc for user environment variables, affects new
 		processes.
 root_bashrc	Update .bashrc for root environment variables, affects new
 		processes.
-sysenvironment	Update /etc/environment config file for desktop applications.  
+sysenvironment	Update /etc/environment configuration file for desktop applications.  
                 Generally requires logout/login.
 suse-sysproxy	Update System-wide proxy setting /etc/sysconfig/proxy
-curl		Update .curlrc config file for user
-root_curl	Update .curlrc config file for root
-wgetrc		Update .wgetrc config file for user
-dropbox		Restart dropbox program with updated environment
+curl		Update .curlrc configuration file for user
+root_curl	Update .curlrc configuration file for root
+wgetrc		Update .wgetrc configuration file for user
+dropbox		Restart DropBox program with updated environment
 kde		Update KDE kio setting and signal dbus to update KDE/qt native 
 		Desktop applications of proxy setting change.
-s3cmd		Update s3cmd config file setting for proxy
+s3cmd		Update s3cmd configuration file setting for proxy
 virtualbox	Update VirtualBox management proxy setting via VBoxManage
-git             Set Git global config setting
+git             Set Git global configuration setting
 
 Prerequisites
 -------------
-This program does not have much along the lines of pre-requisites.  A working 
+This program does not have much along the lines of prerequisites.  A working 
 Linux system will likely have everything that is needed, but Core Utils are
 required, as well as a Bourne Again (bash) compatible shell.
 
 While the software will work without a proxy server somewhere, or even a 
 working network, it would be rather pointless.  A locally installed proxy 
-server such as cntlm is suggested as that was what this program was originally
+server such as CNTLM is suggested as that was what this program was originally
 developed for.  ProxyManager does not care what the proxy server software is or
 whether it is local or elsewhere on the network:  It simply turns the setting 
 to use the Proxy server on or off for each application.
@@ -101,7 +101,7 @@ Installation
 1. Become ROOT (you may try: sudo -s)
 2. If you are upgrading:
   2.1 Backup your enabled modules links - you may try
-       cd /Old/proxymanager/dir
+       cd /Old/ProxyManager/dir
        tar cvf /tmp/proxy-modules.tar enable/ disable/
   2.2 Delete any old version of ProxyManager / pOn / proxy_on 
 3. Change to where you want to install ProxyManager, try
@@ -109,20 +109,20 @@ Installation
 4. Extract the archive.  It will create a proxymanager/ directory
         and some sub-directories.
     tar xvf ~/Downloads/ProxyManager-v0.1.tar
-5. Create a config file.  You can do it manually or you can use 
+5. Create a configuration file.  You can do it manually or you can use 
         the provided script, try
     cd /usr/local/proxymanager/
     ./proxymanager-setup
-        To manually set up the ProxyManager config file refer to
+        To manually set up the ProxyManager configuration file refer to
         the sample file sample-proxymanager.conf
 6) Enable/disable desired modules. Refer to the next section for information
    on Enabling/Disabling modules.
 
   Or restore the backed up links for an upgrade, try
-    cd /usr/local/proxymanger
+    cd /usr/local/proxymanager
     tar xvf /tmp/proxy-modules.tar
-7. Stop being root (ctrl-D)
-8. Add some aliases to turn proxy on/off to your ~/.bashrc file, eg
+7. Stop being root (Ctrl-D)
+8. Add some aliases to turn proxy on/off to your ~/.bashrc file, e.g
     alias p-on="/usr/local/proxymanager/proxymanager on"
     alias p-off="/usr/local/proxymanager/proxymanager off"
     alias p-ck="/usr/local/proxymanager/proxymanager off"
@@ -136,13 +136,13 @@ Configuration
  PM_INSTALL_DIR=/usr/local/proxymanager
 
    Modules Directory              : $PM_INSTALL_DIR/modules
-   Tempaltes Directory            : $PM_INSTALL_DIR/templates
+   Templates Directory            : $PM_INSTALL_DIR/templates
    Active Modules Enable and Check: $PM_INSTALL_DIR/enable
    Active Modules Disable         : $PM_INSTALL_DIR/disable
 
 Enabling/disabling modules
 --------------------------
-Modules shipped with proxymanager are installed in $PM_INSTALL_DIR/modules. When
+Modules shipped with ProxyManager are installed in $PM_INSTALL_DIR/modules. When
 running "proxymanager on" or "proxymanager check", ProxyManager runs all modules
 linked from $PM_INSTALL_DIR/enable/.  When running "proxymanager off"
 ProxyManager runs the modules linked in $PM_INSTALL_DIR/disable/
@@ -151,26 +151,26 @@ Modules are enabled by creating a soft-link from the enable and disable
 directory to the module.  See the enable and disable directory for examples.
 
 To disable a module remove the corresponding links.  The number in the link file
-name determins the run-order - it is a good idea to start services first and to
+name determines the run-order - it is a good idea to start services first and to
 stop them last.
 
 Additionally if the PM_USERMODULES variable specifies a valid directory, modules
 which does not require root will be executed from this directory.  In this case
-only the root priv modules from $PM_INSTALL_DIR/enable or
+only the root-priv modules from $PM_INSTALL_DIR/enable or
 $PM_INSTALL_DIR/disable will be used.
 
 The PM_USERMODULES variable can be specified in .proxymanrc in the user's home
 directory.
 
 Note: A script is included to automate the process of setting up the links to
-enable or disable modules.  The script is still very much un-tested.  You can
+enable or disable modules.  The script is still very much untested.  You can
 try:
 
 proxymanager-module enable modulename
     Enabled the specified module called "modulename" (Create links for it)
 
 proxymanager-module disable modulename
-    Disabled the specified mofule named "modulename" (Remove the links)
+    Disabled the specified module named "modulename" (Remove the links)
 
 proxymanager-module list
     Displays a list of currently enabled modules (Checks the links)
@@ -196,14 +196,14 @@ runs before the sudo modules. (Regardless of numbering)
  o Links are to be named starting with a capital E to enabled them for the user
  o Links are to be named starting with capital D for Disable for the user
  o Links are to be named starting with "suE" to enabled them for root / system wide
- o Links are to be named starting wtih suD for Disable for system wide / root
+ o Links are to be named starting with suD for Disable for system wide / root
 
 Note: a Module is ENABLED by creating two links, one for Enabling the proxy and
 one for disabling the proxy for the specific application.  A module is disabled
 by removing both links.
 
-Desription of main configuration file
--------------------------------------
+Description of main configuration file
+--------------------------------------
 PM_INSTALL_DIR indicates where the main program, as well as sub directories for
  modules and enable/disable links are to be found.
     Default : PM_INSTALL_DIR=/usr/local/proxymanager
@@ -220,8 +220,8 @@ Check and report whether the application is configured to use a proxy server
 
 1. Modules are sourced as bash script commands by the main script.
 2. Modules should examine the $1 argument for the value "on", "off" or "check"
-3. Root priv modules should source /etc/proxymanager.conf to get   
-   default settings
+3. Root-priv modules should source /etc/proxymanager.conf to get default
+   settings
 
 A blank example module is included in the file "sample_module"
 
@@ -249,17 +249,17 @@ also in future be supported.
 Testing.  Lots of it.
 
 More modules are needed, besides the above mentioned Mozilla Firefox module,
-eg for
+e.g for
  o gnome
  o csh
  o bourne shell
- o Module to retain stopped/started state of a local proxy service across reboots
+ o Module to retain stopped/started state of a local proxy service across
+   reboots
  o Support for system global settings for more distributions
  o Apache?
  o ?
  o ?
 
-Modules which require root priv to change a settings often don't require it to
-just report the status.  Example Apt config file can be read by an
-unprivilidged user so root privs to check proxy setting is over-kill for some
-modules.
+Modules which require root-priv to change settings often don't require it to
+just report the current value.  Often configuration file can be read by normal
+users so root privs is not required to check the status for many modules.
