@@ -2,6 +2,9 @@
 # This file is part of ProxyManager.  It is a tempalte for writing a new
 # modules as if there are not enough working examples in the modules
 # directory (Hint Hint)
+# 
+# This file should be read in conjunction with the MODULE_HOWTO included
+# in the docs directory.
 
 # Copyright YEAR YOUR-NAME-HERE
 # See the README.module file for contact and additional information

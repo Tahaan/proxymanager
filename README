@@ -15,6 +15,16 @@ find where to set that proxy setting for each new program or daemon. It is
 currently only at v0.1 but since it should be usable by more people I decided
 to go ahead and gitify it already.
 
+In addition where there exist some "global" configuration files to provide a
+central location for managing proxy settings, the problem with these are that
+firstly they often require a logout-re-loging or worse, a reboot, and even then
+are not well supported by all applications and in any case prove to be quite
+specific to specific distributions.
+
+ProxyManager solves this by changing the proxy settings for each application
+directly so that it avoids the "inheritied" proxy settings problems with these
+configuration files.
+
 Licensing
 ---------
 Copyright 2013 by Johan Hartzenberg 
@@ -214,16 +224,17 @@ PM_USERHOME=`eval echo ~$PM_USERNAME`
 Creating new modules
 --------------------
 Modules are simply bash scripts which automate three basic tasks
-Set the specific application to use the configured proxy server
-Set the specific application to not use the proxy server
-Check and report whether the application is configured to use a proxy server
+ o Set the specific application to use the configured proxy server
+ o Set the specific application to not use the proxy server
+ o Check and report whether the application is configured to use a proxy server
 
-1. Modules are sourced as bash script commands by the main script.
-2. Modules should examine the $1 argument for the value "on", "off" or "check"
+How to create a new Module for ProxyManager is documented in the file
+ docs/MODULE_HOWTO, which may be read in conjunction with the included module
+ template named "sample_module
+
 3. Root-priv modules should source /etc/proxymanager.conf to get default
    settings
 
-A blank example module is included in the file "sample_module"
 
    Future Features / To-Do list
   ==============================

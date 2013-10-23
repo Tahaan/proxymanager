@@ -1,0 +1,88 @@
+This document explains how to write a new module for ProxyManager the easy way.
+It can be used in conjunction with the module template file which is part of
+the ProxyManager files, called sample_module.
+
+A ProxyManager module is a shell script which does one of three things:
+ o Turn On the Proxy setting for an application
+ o Turn off the Proxy setting, or
+ o Display the current proxy setting
+
+To write a ProxyManager module for an application you need to find out how to
+do those three tasks via the command line.  Each task is often achievable by
+means of a simple one-line shell command, but even if it is a complicated 
+program it can still be made to work.
+
+Generally speaking you will need to find out where the application stores its
+own configuration.  Very often this is a dot-file in the user's home directory
+or a file somewhere in /etc which keeps all the configuration settings for
+that program.
+
+You will also want to know how to get the program to re-read its configuration
+files.  Some programs needs to be stopped and re-started.  Some can be given a
+signal, very often by the command "kill -HUP $PID".  Some programs are short-
+lived and reads their configuration files regularly.  In this case one just
+needs to wait for the next invocation and the program will automatically get
+the updated settings.
+
+Some programs have special mechanisms for updating settings, such as a special
+command which will notify the program of the new setting and update the stored
+setting.
+
+If you don't know how to change the Proxy Setting for a program, try to google
+it or ask in support forums.
+
+The next part is to understand that ProxyManager have two types of modules - 
+normal user modules and system modules that require root priviledges.  The
+scripts for the two types of modules differ in subtle ways.
+
+Normal user modules run as the user starting the proxymanager script and are
+sourced inline in the main proxymanager program.
+
+System modules are executed via the sudo program to elevate the privileges.
+Since these script do not automatically inherit settings from the main
+proxymanager program they need to source (read) the configuration file from
+/etc/proxymanager.conf to get the standard configuration settings.
+
+Both types of module examine the contents of $1 to determine what action to
+take.  This variable will have one of three values, "on", "off" or "check".
+
+When the value is "on" it needs to perform the actions needed to enable the
+proxy setting for the program, when the value is "off" it needs to disable the
+proxy setting.  So as example the "on" sub-task could be:
+
+  Modify a configuration file to change the setting from PROXY=None to PROXY=On.
+   (Example: The wget module)
+
+Or
+
+  Restart a process with a modified environment variable set.
+   (Example: The DropBox module)
+
+Or
+
+  Run a program control command to set a new proxy server value
+   (Example: The VirtualBox module)
+
+Modules shoud be well behaved in that they take care not to change or lose
+values of any user customized settings.  This is particularly relevant where
+a module uses a "template" to control the on and off settings for the program
+or service.
+
+The next step is to determine if there is a requirement to run this module
+early-on or later in the process.  If this is important, it should be
+documented and a special case added for this module in the module control
+program "proxymanager-module".
+
+Regardless you can create links for your module in the enable and disable
+directories with numbers to order when they will run. These will be maintained
+if you later use proxymanager-module to disable and/or re-enable the module.
+
+Next you may want to share your module with others.  You can simply email a
+copy of the module and documentation for it to me. I will review it, discuss
+any potential issues with you, and may include it, with appropriate attribution
+in the next release.
+
+Or you can submit a request/issue detailing the module on github.  Visit the
+ProxyManager github project page at : https://github.com/Tahaan/proxymanager
+
+
