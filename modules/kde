@@ -14,6 +14,10 @@
 KDE_CF=$PM_USERHOME/.kde/share/config/kioslaverc
 [ -d $PM_USERHOME/.kde4 ] && KDE_CF=$PM_USERHOME/.kde4/share/config/kioslaverc
 
+TEMPFILE=/tmp/pon.kioslaverc
+
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
 if [ -f "$KDE_CF" ]
 then
 
@@ -35,11 +39,12 @@ then
 
       install)
          # This will in future set up the proxy by means of a template
-         cp $PM_INSTALL_DIR/templates/enable_kde ${KDE_CF}
+         ParseTemplate $PM_INSTALL_DIR/templates/enable_kde > $TEMPFILE
+         cp $TEMPFILE ${KDE_CF}
          ;;
 
       check)
-        KDE_CHECK=$(grep -c ProxyType=1 $KDE_CF ) || KDE_CHECK=None
+        KDE_CHECK=$( [ -f $KDE_CF ] && grep -c ProxyType=1 $KDE_CF || KDE_CHECK=N/A )
         echo "KDE: $KDE_CHECK"
         ;;
     esac

@@ -7,10 +7,15 @@
 
 # ProxyManager module to restart DropBox with/without proxy environment variables
 
+TEMPFILE=/tmp/pon.dropbox
+
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
 case "$1" in
   on)
      echo Enabling for Dropbox
-     . $PM_INSTALL_DIR/templates/enable_bashrc
+     ParseTemplate $PM_INSTALL_DIR/templates/enable_bashrc > $TEMPFILE
+     . $TEMPFILE
      (dropbox stop
       dropbox start) >/dev/null
     ;;

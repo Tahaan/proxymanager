@@ -5,9 +5,11 @@
 # See the included README file for contact and additional information
 # See the included COPYING file for licensing information
 
-# This ProxyManager module switches the git global Proxy setting on or off
+# This ProxyManager module switches the git user global Proxy setting on or off
 
 GIT_CF=$PM_USERHOME/.gitconfig
+
+. $PM_INSTALL_DIR/modules/.sharedfunctions
 
 case "$1" in
   on)

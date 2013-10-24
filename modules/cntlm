@@ -5,8 +5,13 @@
 # See the included README file for contact and additional information
 # See the included COPYING file for licensing information
 
-# ProxyManager module to stop/start cntlm
+# ProxyManager module to stop/start/check cntlm as part of managing Proxy
+# settings
+
 # Requires root priv to affect Global System Configuration
+
+. /etc/proxymanager.conf
+. $PM_INSTALL_DIR/modules/.sharedfunctions
 
 case "$1" in
   on)

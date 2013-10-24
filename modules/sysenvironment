@@ -1,5 +1,5 @@
 #!/bin/sh
-# ProxyMaanger module for system default proxy setting
+# ProxyManager module for system default proxy setting
 # This file is part of ProxyManager
 # Copyright 2013 Johan Hartzenberg 
 # ProxyManager is distributed under the terms of the GNU General Public License
@@ -14,21 +14,23 @@ SYSDEFAULT_CONFIG=/etc/environment
 TEMPFILE=/tmp/pon.environment
 [ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
 case "$1" in
   on)
-    echo Enabling for System Environment Default
-    grep -vi "_proxy=" $SYSDEFAULT_CONFIG > $TEMPFILE
+    echo Enabling for Sys Environment Global setting
+    grep -vi "^[^#]*_proxy=" $SYSDEFAULT_CONFIG > $TEMPFILE
     cat $PM_INSTALL_DIR/templates/enable_environment >> $TEMPFILE
     mv $TEMPFILE $SYSDEFAULT_CONFIG
     ;;
   off)
-    echo Disabling for System Environment Default
-    grep -vi "_proxy=" $SYSDEFAULT_CONFIG > $TEMPFILE
+    echo Disabling for Sys Environment Global setting
+    grep -vi "^[^#]*_proxy=" $SYSDEFAULT_CONFIG > $TEMPFILE
     mv $TEMPFILE $SYSDEFAULT_CONFIG
     ;;
   check)
-    SYSDEFAULT_CHECK=$(grep -ci _proxy.*3128 $SYSDEFAULT_CONFIG 2>/dev/null) || SYSDEFAULT_CHECK=None
-    echo Sys Environment Default: $SYSDEFAULT_CHECK
+    SYSDEFAULT_CHECK=$( [ -f $SYSDEFAULT_CONFIG ] && grep -ci "^[^#]*_proxy=." $SYSDEFAULT_CONFIG 2>/dev/null || SYSDEFAULT_CHECK=N/A )
+    echo Sys Environment Global setting: $SYSDEFAULT_CHECK
 
     #set -vx
     #SESMGRPID=$(ps -e -o pid,cmd |grep "[s]ession" |awk '{print $1}')

@@ -1,2 +1,2 @@
-proxy_host = localhost
-proxy_port = 3128
+proxy_host = PMHOSTTAG
+proxy_port = PMPORTTAG

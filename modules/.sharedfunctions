@@ -1,0 +1,12 @@
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# This file defines some standard functions for use in ProxyManager modules
+
+ParseTemplate() {
+    sed 's/PMHOSTTAG/'${PM_PROXY_HOST}'/g; s/PMPORTTAG/'${PM_PROXY_PORT}'/g' $1
+}
+

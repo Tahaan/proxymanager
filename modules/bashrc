@@ -21,11 +21,13 @@ BASH_CF=$PM_USERHOME/.bashrc
 TEMPFILE=/tmp/p0n.bashrc
 [ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
 case "$1" in
   on)
     echo Enabling for bash
-    grep -vi "_proxy=" $BASH_CF > $TEMPFILE
-    cat $PM_INSTALL_DIR/templates/enable_bashrc >> $TEMPFILE
+    grep -vi "^[^#]*_proxy" $BASH_CF > $TEMPFILE
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_bashrc >> $TEMPFILE
     cp $TEMPFILE $BASH_CF
     echo "    Restart terminal or run exec $SHELL"
     ;;
@@ -33,13 +35,14 @@ case "$1" in
     echo Disabling for Bash
     if [ -f $BASSH_CF ]
     then
-        grep -vi "_proxy=" $BASH_CF > $TEMPFILE
+        grep -vi "^[^#]*_proxy" $BASH_CF > $TEMPFILE
+        cat $PM_INSTALL_DIR/templates/disable_bashrc >> $TEMPFILE
         mv $TEMPFILE $BASH_CF
     fi
     ;;
 
   check)
-    BASH_CHECK=$(grep -ci _proxy= $BASH_CF 2>/dev/null) || BASH_CHECK=None
-    echo Bash-RC: $BASH_CHECK \( http_proxy=\"$http_proxy\" \)
+    BASH_CHECK=$( [ -f $BASH_CF ] && grep -ci "^[^#]*_proxy=" $BASH_CF 2>/dev/null || BASH_CHECK=None )
+    echo Bash: $BASH_CHECK \( http_proxy=\"$http_proxy\" \)
     ;;
 esac

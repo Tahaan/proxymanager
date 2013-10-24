@@ -1,0 +1,36 @@
+History / log of changes in ProxyManager
+
+2013-10-23 (v0.1.6)
+Bash module: Improve resilience against commented proxy settings via .bashrc file
+Bash module: Implement "explicit unset" method for disable via disable_template
+Bash module: Implement support for configurable proxy via enable template
+Root_Bash module: Improve resilience against commented proxy settings via .bashrc file
+Root_Bash module: Implement "explicit unset" method for disable via disable_template
+Root_Bash module: Implement support for configurable proxy via enable template
+s3cmd module: Improve resilience against commented proxy settings via .s3cfg file
+s3cmd module: Implement support for configurable proxy via enable template
+curlrc module: Improve resilience against commented proxy settings via .curlrc file
+curlrc module: Implement support for configurable proxy via enable template
+Root_curlrc module: Improve resilience against commented proxy settings via .curlrc file
+Root_curlrc module: Implement support for configurable proxy via enable template
+wgetrc module: Improve resilience against commented proxy settings via .wgetrc file
+wgetrc module: Implement support for configurable proxy via enable template
+sys-apt module: Improve resilience against commented proxy settings via config file
+sys-apt module: Implement support for configurable proxy via enable template
+virtualbox module: Implement support for configurable proxy via enable template
+dropbox: Implement support for configurable proxy via template (enable_bashrc)
+s3cmd: Implement support for configurable proxy via template (enable_bashrc)
+sys-apt module: Check for existence of Apt, improve detection of any Apt Proxy settings
+Create sharedfunctions file to store shared module functions.
+Create ParseTemplate function to enable configurable Proxy host and port
+Documentation improvements
+Created docs/CHANGES
+Created docs/PROXY_SPECIFICATION_SYNTAX
+
+2012-10-22 (v0.1.5)
+Created Documentation for Module writers (docs/MODULE-HOWTO)
+
+2013-10-20
+git module added
+git: Implement support for configurable proxy setting.
+kde module: Implement support for configurable proxy via install method (Not yet usable)

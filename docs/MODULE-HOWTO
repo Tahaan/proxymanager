@@ -7,6 +7,8 @@ A ProxyManager module is a shell script which does one of three things:
  o Turn off the Proxy setting, or
  o Display the current proxy setting
 
+What you need
+-------------
 To write a ProxyManager module for an application you need to find out how to
 do those three tasks via the command line.  Each task is often achievable by
 means of a simple one-line shell command, but even if it is a complicated 
@@ -31,8 +33,10 @@ setting.
 If you don't know how to change the Proxy Setting for a program, try to google
 it or ask in support forums.
 
+How ProxyManager modules work
+-----------------------------
 The next part is to understand that ProxyManager have two types of modules - 
-normal user modules and system modules that require root priviledges.  The
+normal user modules and system modules that require root privileges.  The
 scripts for the two types of modules differ in subtle ways.
 
 Normal user modules run as the user starting the proxymanager script and are
@@ -63,11 +67,13 @@ Or
   Run a program control command to set a new proxy server value
    (Example: The VirtualBox module)
 
-Modules shoud be well behaved in that they take care not to change or lose
+Modules should be well behaved in that they take care not to change or lose
 values of any user customized settings.  This is particularly relevant where
 a module uses a "template" to control the on and off settings for the program
 or service.
 
+Setting up the module
+---------------------
 The next step is to determine if there is a requirement to run this module
 early-on or later in the process.  If this is important, it should be
 documented and a special case added for this module in the module control
@@ -77,6 +83,18 @@ Regardless you can create links for your module in the enable and disable
 directories with numbers to order when they will run. These will be maintained
 if you later use proxymanager-module to disable and/or re-enable the module.
 
+Template Support
+----------------
+Modules may use the ParseTemplate shell function to "parse" a template file.
+The function will read the specified template file and substitute the configured
+proxy server host for any occurrences of PMHOSTTAG, and will substitute the
+configured proxy port for any occurrences of PMPORTTAG in the file.
+
+The output of the function can be redirected to a temp file or appended to an
+existing configuration file.
+
+Including your module in ProxyManager
+-------------------------------------
 Next you may want to share your module with others.  You can simply email a
 copy of the module and documentation for it to me. I will review it, discuss
 any potential issues with you, and may include it, with appropriate attribution

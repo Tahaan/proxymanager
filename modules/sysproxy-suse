@@ -1,5 +1,5 @@
 #!/bin/bash
-# ProxyMaanger module to set System-wide proxy for Suse
+# ProxyManager module to set System-wide proxy for Suse
 # This file is part of ProxyManager
 # Copyright 2013 Johan Hartzenberg 
 # ProxyManager is distributed under the terms of the GNU General Public License
@@ -7,7 +7,7 @@
 # See the included COPYING file for licensing information
 
 # Note: Existing processes needs to be restarted for this setting be used
-# It is generally recommended to log out and back in for this setting to take effect.
+# It is generally required to log out and back in for this setting to take effect.
 
 # Run with root priv to affect Global System Configuration
 
@@ -16,7 +16,7 @@ SUSE_CF=/etc/sysconfig/proxy
 TEMPFILE=/tmp/pon.suse-sys
 [ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
-#set -x
+. $PM_INSTALL_DIR/modules/.sharedfunctions
 
 case "$1" in
   on)
@@ -31,7 +31,7 @@ case "$1" in
     #replace 'ENABLED="yes' 'ENABLED="no'  -- $SUSE_CF
     ;;
   check)
-    SUSE_CHECK=$(grep -c "ENABLED=.*yes" $SUSE_CF 2>/dev/null) || SUSE_CHECK=None
+    SUSE_CHECK=$( [ -f $SUSE_CF && grep -c "ENABLED=.*yes" $SUSE_CF 2>/dev/null || SUSE_CHECK=N/A )
     echo Suse-System: $SUSE_CHECK
 esac
 

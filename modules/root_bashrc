@@ -13,23 +13,26 @@ RBASH_CF=~root/.bashrc
 TEMPFILE=/tmp/pon.rbash
 [ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
 case "$1" in
   on)
-    echo Enabling for Root BashRC
-    grep -vi "_proxy=" $RBASH_CF > $TEMPFILE
-    cat $PM_INSTALL_DIR/templates/enable_bashrc >> $TEMPFILE
+    echo Enabling for Root Bash
+    grep -vi "^[^#]*_proxy" $RBASH_CF > $TEMPFILE
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_bashrc >> $TEMPFILE
     mv $TEMPFILE $RBASH_CF
     ;;
   off)
-    echo Disabling for Root BashRC
+    echo Disabling for Root Bash
     if [ -f $RBASH_CF ]
     then
-        grep -vi "_proxy=" $RBASH_CF > $TEMPFILE
+        grep -vi "^[^#]*_proxy" $RBASH_CF > $TEMPFILE
+        cat $PM_INSTALL_DIR/templates/disable_bashrc >> $TEMPFILE
         mv $TEMPFILE $RBASH_CF
     fi
     ;;
   check)
-    RBASH_CHECK=$(grep -ci _proxy $RBASH_CF 2>/dev/null) || RBASH_CHECK=None
-    echo Root Bash-RC: $RBASH_CHECK
+    RBASH_CHECK=$( [ -f $RBASH_CF ] && grep -ci "^[^#]*_proxy=" $RBASH_CF 2>/dev/null || RBASH_CHECK=None )
+    echo Root Bash: $RBASH_CHECK
 esac
 

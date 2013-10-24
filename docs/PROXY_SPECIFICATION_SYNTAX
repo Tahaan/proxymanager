@@ -1,0 +1,205 @@
+This Document details on How proxy settings may be controlled for programs
+which are supported by existing ProxyManager modules.
+
+This file is part of ProxyManager
+Copyright 2013 Johan Hartzenberg 
+ProxyManager is distributed under the terms of the GNU General Public License
+See the included README file for contact and additional information
+See the included COPYING file for licensing information
+
+This document is provided as a reference / archive of research that went into
+creating the modules that make up the current ProxyManager collection.
+
+Bash shell
+----------
+
+ProxyManager controls Bash via the users .bashrc configuration file.  Bash
+reads the file on each invocation.
+
+Bash may inherit settings from other configuration files as well as from its
+parent process.  For this reason the proxy is disabled by explicitly unsetting
+any proxy settings.
+
+The format for the settigns are 
+MASTER_PROXY="://localhost:3128"
+export no_proxy=localhost,127.0.0.0/8,*.local
+export NO_PROXY=localhost,127.0.0.0/8,*.local
+export all_proxy=socks${MASTER_PROXY}
+export ALL_PROXY=socks${MASTER_PROXY}
+export http_proxy=http${MASTER_PROXY}
+export HTTP_PROXY=http${MASTER_PROXY}
+export ftp_proxy=http${MASTER_PROXY}
+export FTP_PROXY=http${MASTER_PROXY}
+export https_proxy=http${MASTER_PROXY}
+export HTTPS_PROXY=http${MASTER_PROXY}
+
+To enable Proxy, the settings are added to the bashrc file.
+
+To Disable the settings are replaced with "unset" statements.
+
+To report the proxy configuration state the script checks for the existence of
+proxy_....= statements in the .bashrc file.
+
+Note: Bash settings are exposed to other processes via environment variables.
+Some programs, such as wget, curl, will use environment variables to obtain
+proxy settings when their own configuration files does not specify any.
+
+In addition some programs, such as GoogleEarth and DropBox can only be 
+controlled via shell environment variables as they do not expose any other
+interface for managing proxy settings.
+
+Git client
+----------
+
+ProxyManager uses the Git client tools to control the Git proxy settings
+globally (eg for all projects)
+
+The command specification for Git is:
+ o Enable Proxy:
+   git config --global http.proxy http://${PM_PROXY_HOST}:${PM_PROXY_PORT}
+
+ o Disable Proxy:
+   git config --global http.proxy ""
+
+ o Check Proxy:
+   git config --global http.proxy | grep -c http
+
+
+Virtualbox
+----------
+
+ProxyManager uses VBoxManage to control the VirtualBox proxy settings.
+
+The command specification for Virtualbox is:
+ o Enable Proxy:
+   VBoxManage setextradata global GUI/ProxySettings "proxyEnabled,${PM_PROXY_HOST},${PM_PROXY_PORT},authDisabled,,"
+
+ o Disable Proxy:
+   VBoxManage setextradata global GUI/ProxySettings "proxyDisabled,,,authDisabled,,"
+
+ o Check Proxy:
+   BoxManage getextradata global GUI/ProxySettings|grep -c proxyEnabled,
+
+WGet Web downloader
+-------------------
+
+ProxyManager controlls wget via the user's .wgetrc file.  wget reads the file
+on each invocation.
+
+The format for the settings are:
+ o Enable Proxy:
+   https_proxy = http://localhost:3128
+   http_proxy = http://localhost:3128
+   ftp_proxy = http://localhost:3128
+
+ o Disable Proxy:
+   Proxy is disabled by removing the settings statements from the .wgetrc file.
+
+ o Check Proxy:
+   To check the wget proxy status the settings are checked in the .wgetrc
+   configuration file
+
+
+Curl web downloader
+-------------------
+
+ProxyManager controlls curl's proxy settings via the users's .curlrc file.
+
+The format for the settings are:
+ o Enable Proxy:
+   proxy = localhost:3128
+
+ o Disable Proxy:
+   Proxy is disabled by removing the statement from the .curlrc file.
+
+ o Check Proxy:
+   To check the wget proxy status the settings are checked in the .curlrc
+   configuration file
+
+KDE system global setting
+-------------------------
+
+ProxyManager controls the KDE system global proxy setting by means of the 
+KIO slave RC configuration file located in the user's home directory under
+/.kde4/share/config/kioslaverc or /.kde/share/config/kioslaverc
+
+After changing the configuration ProxyManager sends a dbus message to
+inform kio-slave processes to re-read the configuration.
+
+ProxyManager sets the Proxy to type=1 in the configuration file to enable the
+use of the proxy settings, or to type=0 to disable to proxy.
+
+The dbus command to update client programs is:
+dbus-send --type=signal /KIO/Scheduler org.kde.KIO.Scheduler.reparseSlaveConfiguration string:""
+
+To check the Proxy status ProxyManager checks that the Proxy type=1 in the 
+configuration file.
+
+
+Gnome system global setting (Including XFCE / LXDE)
+---------------------------
+
+ProxyManager does not YET have a Gnome/XFCE global system proxy management module.
+
+ProxyManager could potentially control Gnome global system proxy settings by
+means of the following CLI commands
+
+ o Enable Proxy:
+    gsettings set org.gnome.system.proxy mode 'manual'
+
+ o Disable Proxy:
+    gsettings set org.gnome.system.proxy mode 'none'
+
+ o Check Proxy:
+    gsettings get org.gnome.system.proxy mode
+
+
+Amazon S3 client s3cmd
+----------------------
+ProxyManager uses the s3cmd configuration file .s3cfg in the user's home
+directory to control the s3cmd client proxy settings.  s3cmd reads the 
+configuration file on each invocation.
+
+The format for the settings are:
+ o Enable Proxy:
+   proxy_host = localhost
+   proxy_port = 3128
+
+ o Disable Proxy:
+   proxy_host = 
+   proxy_port = 0
+
+ o Check Proxy status:
+   Check settings present in .s3cfg
+
+
+DropBox client
+--------------
+
+ProxyManager controls DropBox by restarting the dropbox client with updated
+shell environment variables.
+
+The settings use the same format as Bash.
+
+To check the status of the DropBox client proxy setting, ProxyManager
+inspects the environment variables for any running dropbox client process.
+
+APT package manager
+-------------------
+
+ProxyManager uses the APT configuration files to set a proxy setver for APT.
+apt-get reads the configuration files on every invocation.
+
+The configuration file used is /etc/apt/apt.conf.d/00pon_proxy
+
+To enable the proxy the file is created with the following content
+  Acquire::http::Proxy "http://localhost:3128";
+  #Acquire::ftp::proxy "ftp://localhost:3128/";
+  #Acquire::https::proxy "https://localhost:3128/";
+
+To disable the proxy the file is deleted.
+
+To check the proxy the file is checked for the presence of Acquire::http::Proxy
+  settings
+
+

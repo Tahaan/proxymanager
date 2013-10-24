@@ -1,1 +1,1 @@
-proxy = localhost:3128
+proxy = PMHOSTTAG:PMPORTTAG

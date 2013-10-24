@@ -16,21 +16,23 @@ S3CMD_CF=$PM_USERHOME/.s3cfg
 TEMPFILE=/tmp/pon.s3cfg
 [ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
 case "$1" in
   on)
     echo Enabling for S3cmd
-    grep -v "^proxy_.* =" $S3CMD_CF > $TEMPFILE
-    cat $PM_INSTALL_DIR/templates/enable_s3cfg >> $TEMPFILE
+    grep -v "^[^#]*proxy_.* =" $S3CMD_CF > $TEMPFILE
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_s3cfg >> $TEMPFILE
     mv $TEMPFILE $S3CMD_CF
     ;;
   off)
     echo Disabling for S3cmd
-    grep -v "^proxy_.* =" $S3CMD_CF > $TEMPFILE
+    grep -v "^[^#]*proxy_.* =" $S3CMD_CF > $TEMPFILE
     cat $PM_INSTALL_DIR/templates/disable_s3cfg >> $TEMPFILE
     mv $TEMPFILE $S3CMD_CF
     ;;
   check)
-    S3CMD_CHECK=$(grep -c proxy_.*3128 $S3CMD_CF 2>/dev/null) || S3CMD_CHECK=None
+    S3CMD_CHECK=$( [ -f $S3CMD_CF ] && grep -c "^[^#]*proxy_host* =.*[a-z]" $S3CMD_CF 2>/dev/null || S3CMD_CHECK=None )
     echo S3cmd: $S3CMD_CHECK
     ;;
 esac

@@ -13,23 +13,25 @@ RCURL_CF=~root/.curlrc
 TEMPFILE=/tmp/pon.rcurl
 [ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
 case "$1" in
   on)
-    echo Enabling for Root curlrc \(eg for Yast\)
-    grep -v "^proxy =" $RCURL_CF > $TEMPFILE
-    cat $PM_INSTALL_DIR/templates/enable_curl >> $TEMPFILE
+    echo Enabling for Root Curl \(eg for Yast\)
+    grep -v "^[^#]*proxy =" $RCURL_CF > $TEMPFILE
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_curl >> $TEMPFILE
     mv $TEMPFILE $RCURL_CF
     ;;
   off)
-    echo Disabling proxy for Root curlrc
+    echo Disabling proxy for Root Curl
     if [ -f $RCURL_CF ]
     then
-        grep -v "^proxy =" $RCURL_CF > $TEMPFILE
+        grep -v "^[^#]*proxy =" $RCURL_CF > $TEMPFILE
         mv $TEMPFILE $RCURL_CF
     fi
     ;;
   check)
-    RCURL_CHECK=$(grep -c proxy $RCURL_CF 2>/dev/null) || RCURL_CHECK=None
-    echo Root Curl-RC: $RCURL_CHECK
+    RCURL_CHECK=$( [ -f $RCURL_CF ] && grep -c "^[^#]*proxy =" $RCURL_CF 2>/dev/null || RCURL_CHECK=None )
+    echo Root Curl: $RCURL_CHECK
 esac
 

@@ -15,17 +15,19 @@
 . /etc/proxymanager.conf
 APT_CF=/etc/apt/apt.conf.d/00pon_proxy
 
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
 case "$1" in
   on)
     echo Enabling for APT
-    cp $PM_INSTALL_DIR/templates/enable_apt $APT_CF
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_apt > $APT_CF
     ;;
   off)
     echo Disabling for APT
     [ -f "$APT_CF" ] && rm $APT_CF
     ;;
   check)
-    APT_CHECK=$(grep -ci [^#]*proxy $APT_CF 2>/dev/null ) || APT_CHECK=None
+    APT_CHECK=$( [ ! -d /etc/apt ] && echo N/A || cat /etc/apt/apt.conf.d/* | grep -ci "[^#]*proxy" 2>/dev/null )
     echo APT: $APT_CHECK
     ;;
 esac

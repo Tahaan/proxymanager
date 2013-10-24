@@ -1,5 +1,5 @@
 #!/bin/sh
-# ProxyManager Module for VirtualBox management functions
+# ProxyManager Module for VirtualBox GUI Proxy setting management
 # This file is part of ProxyManager
 # Copyright 2013 Johan Hartzenberg 
 # ProxyManager is distributed under the terms of the GNU General Public License
@@ -9,10 +9,15 @@
 # VirtualBox uses this for checking for and downloading updates.  This does not
 # affect VirtualBox networking in any way.
 
+TEMPFILE=/tmp/pon.virtualbox
+
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
 case "$1" in
   on)
     echo Enaling for VirtualBox
-    VBoxManage setextradata global GUI/ProxySettings $(cat $PM_INSTALL_DIR/templates/enable_virtualbox)
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_virtualbox > $TEMPFILE
+    VBoxManage setextradata global GUI/ProxySettings $(cat $TEMPFILE)
     ;;
   off)
     echo Disabling for VirtualBox
@@ -20,7 +25,7 @@ case "$1" in
     ;;
 
   check)
-    VBOX_CHECK=$(VBoxManage getextradata global GUI/ProxySettings|grep -c proxyEnabled,${PM_PROXY_HOST},$PM_PROXY_PORT)
+    VBOX_CHECK=$(VBoxManage getextradata global GUI/ProxySettings|grep -c "proxyEnabled,..*,..*")
     echo VirtualBox: $VBOX_CHECK
     ;;
 esac
