@@ -1,5 +1,5 @@
 #!/bin/sh
-# ProxyManager module for S3cmd
+# ProxyManager module for Amazon S3 client S3cmd 
 # This file is part of ProxyManager
 # Copyright 2013 Johan Hartzenberg 
 # ProxyManager is distributed under the terms of the GNU General Public License

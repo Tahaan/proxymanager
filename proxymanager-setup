@@ -1,13 +1,15 @@
 #!/bin/bash
 
 # This file is part of ProxyManager
-# Copyright 2013 Johan Hartzenberg 
+# Copyright 2014 Johan Hartzenberg 
 # ProxyManager is distributed under the terms of the GNU General Public License
 # See README file for contact and additional information and COPYING for license
 
-[ -f /etc/proxymanager.conf ] && . /etc/proxymanager.conf
-DEFAULTDIR=${PM_INSTALL_DIR:-/usr/local/proxymanager}
+# This utility will create or update the ProxyManager configuration file and prompt to enable/disable included modules.
 
+[ -f /etc/proxymanager.conf ] && . /etc/proxymanager.conf
+
+DEFAULTDIR=${PM_INSTALL_DIR:-/usr/local/proxymanager}
 printf "Enter install dir: [$DEFAULTDIR] : "
 read SPECIFIED_DIR
 NEW_INSTALL_DIR="${SPECIFIED_DIR:-$DEFAULTDIR}"
@@ -19,6 +21,8 @@ then
 fi
 
 cat <<CONFEND > /etc/proxymanager.conf
+# ProxyManager configuration created via the proxymanager-setup script
+# See sample-proxymanager.conf for a description of this file.
 PM_INSTALL_DIR=$NEW_INSTALL_DIR
 PM_USERNAME=\${SUDO_USER:-\$USER}
 PM_USERHOME=\`eval echo ~\$PM_USERNAME\`
@@ -27,8 +31,26 @@ PM_PROXY_PORT=3128
 # unset PM_USERMODULES
 CONFEND
 
+$NEW_INSTALL_DIR/proxymanager-module avail
+cd $NEW_INSTALL_DIR/modules
+for MODULE in $( ls )
+do
+   printf "Module \"$MODULE\" ? Enable / [Disable] : "
+   read CONFIRM
+   case $CONFIRM in
+      e|E|enable|Enable|ENABLE)
+          $NEW_INSTALL_DIR/proxymanager-module enable $MODULE
+          echo Enabled
+          ;;
+      *)
+          $NEW_INSTALL_DIR/proxymanager-module disable $MODULE
+          echo Disabled.
+   esac
+done
+
 cat <<ALIAS_NOTE
 
+$NEW_INSTALL_DIR/proxymanager-module list
 Copy-paste these alias definitions to your Shell profile (eg .bashrc)
 #--- Cut below this line ---
 alias p-on="'$NEW_INSTALL_DIR'/proxymanager on"

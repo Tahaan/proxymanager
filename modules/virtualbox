@@ -15,7 +15,7 @@ TEMPFILE=/tmp/pon.virtualbox
 
 case "$1" in
   on)
-    echo Enaling for VirtualBox
+    echo Enabling for VirtualBox
     ParseTemplate $PM_INSTALL_DIR/templates/enable_virtualbox > $TEMPFILE
     VBoxManage setextradata global GUI/ProxySettings $(cat $TEMPFILE)
     ;;

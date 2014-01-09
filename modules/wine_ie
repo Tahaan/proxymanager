@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# ProxyManager for Wine IE default proxy setting
+# Does this actually work?
+
+# Note I copied the method from somewhere on the web.  I have tested that the
+# setting goes into the registry but whether anything actually uses it is a test
+# for which I need someone to do and report back on.
+
+TEMPFILE=/tmp/.pOn.wineie
+KEY=
+
+case "$1" in
+  on)
+    echo Enabling for Wine IE
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_wine_ie > $TEMPFILE
+    regedit $TEMPFILE
+    ;;
+  off)
+    echo Disabling for Wine IE
+    regedit $PM_INSTALL_DIR/templates/disable_wine_ie
+    ;;
+  check)
+    [ -f $TEMPFILE ] && rm $TEMPFILE
+    regedit -E $TEMPFILE "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\"
+    WINE_CK=$( grep -c ".ProxyEnable.=dword:0*1" $TEMPFILE || echo None )
+    echo Wine IE: $WINE_CK
+    ;;
+esac

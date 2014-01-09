@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This file is part of ProxyManager
-# Copyright 2013 Johan Hartzenberg 
+# Copyright 2014 Johan Hartzenberg 
 # ProxyManager is distributed under the terms of the GNU General Public License
 # See the included README file for contact and additional information
 # See the included COPYING file for licensing information
@@ -10,7 +10,7 @@
 
 [ -f ~/.proxymanrc ] && . ~/.proxymanrc
 . /etc/proxymanager.conf
-PM_VERSION="Alpha 0.1"
+PM_VERSION="Alpha 0.9"
 
 cd $PM_INSTALL_DIR
 case "$1" in

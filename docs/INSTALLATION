@@ -1,0 +1,155 @@
+      ProxyManager Installation
+    -----------------------------
+    
+This document is for ProxyManager v0.9.
+
+Before installing, if you have not done so yet, you may want to view the 
+included README file.
+
+Quick installation instructions are available online at
+  https://github.com/Tahaan/proxymanager/wiki/Installation
+
+Prerequisites
+-------------
+This program does not have many prerequisites.  A working Linux system will 
+likely have everything that is needed, but Core Utils are required, as well as 
+a Bourne Again (bash) compatible shell.
+
+While the software will work without a proxy server somewhere, or even a 
+working network, it would be rather pointless.  A locally installed proxy 
+server such as CNTLM is suggested as that was what this program was originally
+developed for.  ProxyManager does not care what the proxy server is, or
+whether it is local or elsewhere on the network:  It simply turns the setting 
+to use the Proxy server on or off for each program.
+
+Installation
+------------
+1. Become ROOT (you may try: sudo -s)
+2. If you are upgrading:
+  2.1 Backup your enabled modules links - you may try
+       cd /Old/ProxyManager/dir
+       tar cvf /tmp/proxy-modules.tar enable/ disable/
+  2.2 Delete any old version of ProxyManager / pOn / proxy_on 
+3. Change to where you want to install ProxyManager, try
+    cd /usr/local
+4. Extract the archive.  It will create a proxymanager/ directory
+   and some sub-directories.
+       tar xvf ~/Downloads/ProxyManager-v0.1.tar
+5. Create a configuration file.  You can do it manually or you can use the  
+   provided script, try
+       cd /usr/local/proxymanager/
+       ./proxymanager-setup
+   To manually set up the ProxyManager configuration file refer to the sample 
+   file sample-proxymanager.conf
+6) Enable/disable desired modules. Refer to the next section for information
+   on Enabling/Disabling modules.  In addition if this is an upgrade you may
+   want to restore your links, eg try
+       cd /usr/local/proxymanager
+       tar xvf /tmp/proxy-modules.tar
+7. Stop being root (Ctrl-D)
+8. Add some aliases to turn proxy on/off to your ~/.bashrc file, e.g
+    alias p-on="/usr/local/proxymanager/proxymanager on"
+    alias p-off="/usr/local/proxymanager/proxymanager off"
+    alias p-ck="/usr/local/proxymanager/proxymanager off"
+
+Configuration
+-------------
+   Default Configuration file: /etc/proxymanager.conf
+
+   Default Install directory:
+ PM_INSTALL_DIR=/usr/local/proxymanager
+
+   Modules Directory              : $PM_INSTALL_DIR/modules
+   Templates Directory            : $PM_INSTALL_DIR/templates
+   Active Modules Enable and Check: $PM_INSTALL_DIR/enable
+   Active Modules Disable         : $PM_INSTALL_DIR/disable
+
+Enabling/disabling modules
+--------------------------
+Modules shipped with ProxyManager are installed in $PM_INSTALL_DIR/modules. When
+running "proxymanager on" or "proxymanager check", ProxyManager runs all modules
+linked from $PM_INSTALL_DIR/enable/.  When running "proxymanager off"
+ProxyManager runs the modules linked in $PM_INSTALL_DIR/disable/
+
+Modules are enabled by creating a soft-link from the enable and disable
+directory to the module script in $PM_INSTALL_DIR/modules, eg:
+
+/usr/local/proxymanager/enable$ ls -l
+total 0
+lrwxrwxrwx 1 johan johan 14 Sep 26 12:45 E01kde -> ../modules/kde
+lrwxrwxrwx 1 root  root  17 Sep 26 13:05 E02wgetrc -> ../modules/wgetrc
+lrwxrwxrwx 1 root  root  17 Oct 14 13:48 E03curlrc -> ../modules/curlrc
+
+Note: a Module is ENABLED by creating two links, one for turning the proxy
+setting on, and one for turning it off, for the specific application.  A module
+is disabled by removing both links.
+
+The number in the link file name determines the run-order.  While applications 
+do not often depend on one another for Internet connections, but it is possible.  
+Some (eg a package manager) may depend on global or system settings though, so 
+the facility exists to control the order in which the modules are invoked to 
+affect a setting update.
+
+Additionally if the PM_USERMODULES variable specifies a valid directory, modules
+which does not require root will be executed from this directory.  In this case
+only the root-priv modules from $PM_INSTALL_DIR/enable or
+$PM_INSTALL_DIR/disable will be used.
+
+The PM_USERMODULES variable can be specified in .proxymanrc in the user's home
+directory.
+
+Note: A script is included to automate the process of setting up the links to
+enable or disable modules.  The script is still very much untested.  You can
+try:
+
+proxymanager-module enable modulename
+    Enabled the specified module called "modulename" (Create links for it)
+
+proxymanager-module disable modulename
+    Disabled the specified module named "modulename" (Remove the links)
+
+proxymanager-module list
+    Displays a list of currently enabled modules (Checks the links)
+
+proxymanager-module avail
+    Display a list of available modules which exist in
+    the PM_INSTALL_DIR/modules directory
+
+Manual module link management
+ o Enabling a module
+    cd /usr/local/proxymanager/
+    ln -s ../modules/apt enable/suE02apt
+    ln -s ../modules/apt disable/suD03apt
+
+ o Disabling a module
+    rm /usr/local/proxymanager/disable/suD*apt
+    rm /usr/local/proxymanager/enable/suE*apt
+
+Any modules with root (sudo) requirements will run before all modules that are 
+not using sudo for start-up.  For stop/disable proxy use, the non-sudo modules
+runs before the sudo modules. (Regardless of numbering)
+
+ o Links are to be named starting with a capital E to enabled them for the user
+ o Links are to be named starting with capital D for Disable for the user
+ o Links are to be named starting with "suE" to enabled them for root / system
+   wide
+ o Links are to be named starting with suD for Disable for system wide / root
+
+
+Configuration file
+------------------
+
+The configuration file is located at /etc/proxymanager.conf.  The file is parsed
+inline and sets up needed configuration variables for ProxyManager.
+
+The file can be created manually - a sample configuration file is included in the installation directory.  The file can also be created or updated using the supplied proxymanager-setup script.
+
+PM_INSTALL_DIR indicates where the main program, which is used as the base dir 
+to locate the respective subdirectories for modules, templates and the  
+links for enabled modules.
+    Default : PM_INSTALL_DIR=/usr/local/proxymanager
+
+ProxyManager uses PM_USERNAME to locate the home directory for user software.
+PM_USERNAME=${SUDO_USER:-$USER}
+
+PM_USERHOME=`eval echo ~$PM_USERNAME`

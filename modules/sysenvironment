@@ -1,5 +1,5 @@
 #!/bin/sh
-# ProxyManager module for system default proxy setting
+# ProxyManager module for system proxy for distributions that use /etc/environment
 # This file is part of ProxyManager
 # Copyright 2013 Johan Hartzenberg 
 # ProxyManager is distributed under the terms of the GNU General Public License
@@ -22,11 +22,13 @@ case "$1" in
     grep -vi "^[^#]*_proxy=" $SYSDEFAULT_CONFIG > $TEMPFILE
     cat $PM_INSTALL_DIR/templates/enable_environment >> $TEMPFILE
     mv $TEMPFILE $SYSDEFAULT_CONFIG
+    echo "    Logout and back or restart system may be required"
     ;;
   off)
     echo Disabling for Sys Environment Global setting
     grep -vi "^[^#]*_proxy=" $SYSDEFAULT_CONFIG > $TEMPFILE
     mv $TEMPFILE $SYSDEFAULT_CONFIG
+    echo "    Logout and back or restart system may be required"
     ;;
   check)
     SYSDEFAULT_CHECK=$( [ -f $SYSDEFAULT_CONFIG ] && grep -ci "^[^#]*_proxy=." $SYSDEFAULT_CONFIG 2>/dev/null || SYSDEFAULT_CHECK=N/A )

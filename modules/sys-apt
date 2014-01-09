@@ -9,6 +9,8 @@
 # This works for Muon, Synaptic, etc that use apt / apt-get as backend
 
 # Note: Existing apt processes needs to be restarted for this setting be used
+# Note: Existing shell environment variables might possibly be used when APT 
+# proxy settings are not present.
 
 # Run with root priv to affect Global System Configuration
 

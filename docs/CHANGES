@@ -1,5 +1,15 @@
 History / log of changes in ProxyManager
 
+2014-01-09 (v0.9)
+Configuration is now much easier with the setup script automating module enabling.
+Various modules received bug fixes.
+New Modules:
+ gnome
+ cshrc
+ sys-yum
+Many documentation improvements
+ 
+
 2013-10-23 (v0.1.6)
 Bash module: Improve resilience against commented proxy settings via .bashrc file
 Bash module: Implement "explicit unset" method for disable via disable_template

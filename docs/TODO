@@ -1,0 +1,61 @@
+     ProxyManager To-Do list
+  ==============================
+
+Firefox
+-------
+One of the main limitations is that currently there is no graceful way of 
+changing the proxy settings of a running Firefox instance.  As a result there 
+is no ProxyManager module for Firefox, which is probably the single biggest
+shortcomming of this tool.
+
+Currently Firefox doesn't have a way to be prompted into re-reading its 
+configuration files while running.  A workaround may be to kill Firefox, change
+its configuration, and then re-start it.  This method does not sit well with me
+but if there is demand for it, it can be done.  DropBox uses this style of 
+management, but the way in which it works means this method of changing its
+proxy configuration is less intrusive.
+
+Some Modules (eg KDE) assume that the proxy have been configured at least once 
+and that the setting can simply be toggled on/off.  "Install"-mode modules are
+needed to configure the proxy setting initially in these cases.
+
+There is currently no convenient way change the proxy server 
+and/or port.  ProxyManager to this end supports use of a single Proxy via the 
+PM_PROXY_HOST and PM_PROXY_PORTsettings, specified in the config file. A future
+enhancement to support profiles and/or multiple proxy servers, and servers for 
+different protocols, may also in future be supported.
+
+Modules which require root-priv to change settings often don't require it to
+just report the current value.  Often configuration file can be read by normal
+users so root privs is not required to check the status for many modules.
+
+The existing CNTLM module stops and starts the CNTLM service.  This is an 
+exception to the rule - For other programs the module changes the setting of 
+the Proxy Server to use.  In future this modules may be amended to in stead set
+the upstream proxy to be used.
+
+Include scripts to acticate a specific profile depending on the network comming
+online (integration with Network Manager).  This will require making
+ProxyManager's main script less dependant on interactive use (eg password for
+root, using currently logged in user to determine what user to operate on)
+
+Additional Modules
+------------------
+More modules are needed, besides the above mentioned Mozilla Firefox module,
+e.g for
+ o csh
+ o bourne shell
+ o Support for system global settings for more distributions
+ o Apache?
+ o Squid (upstream proxy setting)
+ o Upstream proxy setting for various proxy/caching clients
+
+Newly implemented (not thoroughly tested) modules
+ o Yum
+ o Wine (Specifically for IE and friends, eg via Wine Registry)
+ o Gnome
+
+For more information, see the Bugs/Enhancement requests at: 
+   https://github.com/Tahaan/proxymanager/issues
+
+   

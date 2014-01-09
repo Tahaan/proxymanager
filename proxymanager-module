@@ -15,8 +15,8 @@ then
    cd $PM_INSTALL_DIR/enable
    echo Root Modules Enabled via links in $( pwd )
    ls -1L suE* | cat -n
-   echo User modules enabled via links in $( pwd )
    [ -d "$PM_USERMODULES" ] && cd $PM_USERMODULES
+   echo User modules enabled via links in $( pwd )
    ls -1L E* | cat -n
 elif [ "$1" == "avail" ]
 then

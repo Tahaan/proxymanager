@@ -5,8 +5,8 @@
 # See the included README file for contact and additional information
 # See the included COPYING file for licensing information
 
-# ProxyManager module for bashrc environment variables
-# This script simply changes the .bashrc file. Any bash process created after
+# ProxyManager module for cshrc environment variables
+# This script simply changes the .cshrc file. Any Csh process created after
 # this will see the environment variables which specifies the proxy server to
 # be used, or else unset to disable the use of a proxy server. This script
 # does not make programs use these settings - some do, some don't, and not all
@@ -17,33 +17,33 @@
 #    Google Earth
 #    DropBox client
 
-BASH_CF=$PM_USERHOME/.bashrc
-TEMPFILE=/tmp/p0n.bashrc
+CSH_CF=$PM_USERHOME/.cshrc
+TEMPFILE=/tmp/p0n.cshrc
 [ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
 . $PM_INSTALL_DIR/modules/.sharedfunctions
 
 case "$1" in
   on)
-    echo Enabling for bash
-    grep -vi "^[^#]*_proxy" $BASH_CF > $TEMPFILE
-    ParseTemplate $PM_INSTALL_DIR/templates/enable_bashrc >> $TEMPFILE
-    cp $TEMPFILE $BASH_CF
-    echo "    Restart terminal to affect change"
+    echo Enabling for Csh
+    grep -vi "^[^#]*_proxy" $CSH_CF > $TEMPFILE
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_cshrc >> $TEMPFILE
+    cp $TEMPFILE $CSH_CF
+    echo "    Restart terminal to affect"
     ;;
   off)
-    echo Disabling for Bash
+    echo Disabling for Csh
     if [ -f $BASSH_CF ]
     then
-        grep -vi "^[^#]*_proxy" $BASH_CF > $TEMPFILE
-        cat $PM_INSTALL_DIR/templates/disable_bashrc >> $TEMPFILE
-        mv $TEMPFILE $BASH_CF
+        grep -vi "^[^#]*_proxy" $CSH_CF > $TEMPFILE
+        cat $PM_INSTALL_DIR/templates/disable_cshrc >> $TEMPFILE
+        mv $TEMPFILE $CSH_CF
     fi
-    echo "    Restart terminal to affect change"
+    echo "    Restart terminal to affect"
     ;;
 
   check)
-    BASH_CHECK=$( [ -f $BASH_CF ] && grep -ci "^[^#]*_proxy=" $BASH_CF 2>/dev/null || BASH_CHECK=None )
-    echo Bash: $BASH_CHECK \( http_proxy=\"$http_proxy\" \)
+    CSH_CHECK=$( [ -f $CSH_CF ] && grep -ci "^[^#]*_proxy=" $CSH_CF 2>/dev/null || CSH_CHECK=None )
+    echo Csh: $CSH_CHECK \( http_proxy=\"$http_proxy\" \)
     ;;
 esac
