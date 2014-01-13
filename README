@@ -163,7 +163,7 @@ ProxyManager.
     
 Configuration
 -------------
-   The main ProxyManager configureation is stored in a file named 
+   The main ProxyManager configuration is stored in a file named 
    /etc/proxymanager.conf
    
    Per-user settings are possible via the .proxymanrc file in the user's home 

@@ -1,5 +1,9 @@
 History / log of changes in ProxyManager
 
+2014-01-13 (v0.9.1)
+Minor tiping/editing corrections
+Fixed disable_bash and disable_cshrc templates which got switched around.
+
 2014-01-09 (v0.9)
 Configuration is now much easier with the setup script automating module enabling.
 Various modules received bug fixes.

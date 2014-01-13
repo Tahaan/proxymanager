@@ -8,7 +8,7 @@
 #
 # Note: Links to modules starting with suE will be executed through sudo
 #       Links to modules starting with E will be sourced inline
-#       Links not startign with either E or suE will be ignored.
+#       Links not starting with either E or suE will be ignored.
 #
 # There are no links in this directory by default - all modules are disabled 
 # by default.

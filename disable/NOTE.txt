@@ -6,7 +6,7 @@
 #
 # Note: Links to modules starting with suD will be executed through sudo
 #       Links to modules starting with D will be sourced inline
-#       Links not startign with either D or suD will be ignored.
+#       Links not starting with either D or suD will be ignored.
 #
 # By default there will not be any links in this directory - all modules are
 # effectively disabled by default.

@@ -1,0 +1,11 @@
+Some modules utilise a template for the static portion of configuration entries 
+to be added to a program's config files.
+
+Modules may parse templates through the built-in ProxyManager function 
+ParseTemplate() which  will substitute the Proxy server and port configured for
+occurences of respectively PMHOSTTAG and PMPORTTAG
+
+Values for the Proxy Host and Proxy Port are configured in the main configuration 
+file /etc/proxymanager.conf
+
+The use of a template is optional and at the discretion of the module creator.
