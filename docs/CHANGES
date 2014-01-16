@@ -2,6 +2,8 @@ History / log of changes in ProxyManager
 
 2014-01-14 (v0.9.5)
 Updated Setup to allow configuring of Proxy Host and port (Issue #12)
+Added new Module for Freshclam, the ClamAV virus database updater
+Added new module for VLC.
 
 2014-01-13 (v0.9.1)
 Minor tiping/editing corrections

@@ -1,0 +1,38 @@
+#!/bin/sh
+# This file is part of ProxyManager
+# Copyright 2014 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# ProxyManager module to set proxy for ClamAV update service, freshclam
+
+# Note: The config giles will be updated and the freshclam service restarted.
+
+# Must be executed with root priv to affect Global System Configuration
+
+. /etc/proxymanager.conf
+FCLAM_CF=/etc/clamav/freshclam.conf
+TEMPFILE=/tmp/pm.yum
+
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
+case "$1" in
+  on)
+    echo Enabling for Freshclam
+    grep -v "^HTTPProxy" $FCLAM_CF > $TEMPFILE
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_freshclam >> $TEMPFILE
+    mv $TEMPFILE $FCLAM_CF
+    /etc/init.d/clamav-freshclam restart
+    ;;
+  off)
+    echo Disabling for Freshclam
+    grep -v "^HTTPProxy" $FCLAM_CF > $TEMPFILE
+    mv $TEMPFILE $FCLAM_CF
+    /etc/init.d/clamav-freshclam restart
+    ;;
+  check)
+    FCLAM_CHECK=$( [ ! -f $FCLAM_CF ] && echo N/A || cat $FCLAM_CF | grep -ci "^HTTPProxy.*[a-zA-Z0-9]$" 2>/dev/null )
+    echo Freshclam: $FCLAM_CHECK
+    ;;
+esac

@@ -33,6 +33,12 @@ Contacts
 --------
 Author: Johan Hartzenberg -> johan@webmaster.co.za
 
+For general support or development issues head over to the ProxyManager 
+discussions group at http://groups.google.com/d/forum/proxymanager
+
+To be notified of new releases, subscribe to the ProxyManager Announcements 
+group at http://groups.google.com/d/forum/proxymanager-announcements
+
 For Bug reports, feature requests or to contribute a module you made please 
 visit the below GitHub page.
 
@@ -129,9 +135,11 @@ Standard Modules included
 
 Prerequisites
 -------------
-This program does not have much along the lines of prerequisites.  A working 
-Linux system will likely have everything that is needed, but Core Utils are
-required, as well as a Bourne Again (bash) compatible shell.
+Having a working "Sudo" installation is highly recommended, and required to 
+manage any modules that affect system-wide settings.
+
+A working Linux system will likely have everything that is needed, but Core 
+Utils are required, as well as a Bourne Again (bash) compatible shell.
 
 While the software will work without a proxy server somewhere, or even a 
 working network, it would be rather pointless.  A locally installed proxy 
@@ -148,7 +156,7 @@ The following actions need to be performed as root:
     cd /usr/local
 2. Extract the archive.  It will create a proxymanager/ directory
         and some sub-directories.
-    tar xvf ~/Downloads/ProxyManager-v0.1.tar
+    tar xvf ~/Downloads/proxymanager-master.tar
 3. Set up Proxymanager.  Try:
     cd /usr/local/proxymanager/
     ./proxymanager-setup

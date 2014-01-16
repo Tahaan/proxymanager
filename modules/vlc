@@ -1,0 +1,36 @@
+#!/bin/sh
+# ProxyManager module for VideoLAN (vlc) client
+# This file is part of ProxyManager
+# Copyright 2014 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# You need to restart any already running VLC instances.
+
+VLC_CF=$PM_USERHOME/.config/vlc/vlcrc
+TEMPFILE=/tmp/pon.vlc
+[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
+
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
+case "$1" in
+  on)
+    echo Enabling for VLC
+    grep -v "^http-proxy.* =" $VLC_CF > $TEMPFILE
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_vlc >> $TEMPFILE
+    mv $TEMPFILE $VLC_CF
+    [ pgrep vlc > /dev/null ] && echo "   Restart VideoLAN/VLC client for changed setting to take effect"
+    ;;
+  off)
+    echo Disabling for VLC
+    grep -v "^http-proxy.*=" $VLC_CF > $TEMPFILE
+    cat $PM_INSTALL_DIR/templates/disable_vlc >> $TEMPFILE
+    mv $TEMPFILE $VLC_CF
+    [ pgrep vlc > /dev/null ] && echo "   Restart VideoLAN/VLC client for changed setting to take effect"
+    ;;
+  check)
+    VLC_CHECK=$( [ -f $VLC_CF ] && grep -c "^http-proxy.*=.*[a-z]" $VLC_CF 2>/dev/null || VLC_CHECK=None )
+    echo VLC: $VLC_CHECK
+    ;;
+esac
