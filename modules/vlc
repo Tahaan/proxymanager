@@ -20,14 +20,14 @@ case "$1" in
     grep -v "^http-proxy.* =" $VLC_CF > $TEMPFILE
     ParseTemplate $PM_INSTALL_DIR/templates/enable_vlc >> $TEMPFILE
     mv $TEMPFILE $VLC_CF
-    pgrep vlc > /dev/null && echo "   Restart VideoLAN/VLC client for changed setting to take effect"
+    pgrep -U ${PM_USERNAME} vlc >/dev/null && echo "   Restart VideoLAN/VLC client for changed setting to take effect"
     ;;
   off)
     echo Disabling for VLC
     grep -v "^http-proxy.*=" $VLC_CF > $TEMPFILE
     cat $PM_INSTALL_DIR/templates/disable_vlc >> $TEMPFILE
     mv $TEMPFILE $VLC_CF
-    pgrep vlc > /dev/null && echo "   Restart VideoLAN/VLC client for changed setting to take effect"
+    pgrep -U ${PM_USERNAME} vlc >/dev/null && echo "   Restart VideoLAN/VLC client for changed setting to take effect"
     ;;
   check)
     VLC_CHECK=$( [ -f $VLC_CF ] && grep -c "^http-proxy.*=.*[a-z]" $VLC_CF 2>/dev/null || VLC_CHECK=None )

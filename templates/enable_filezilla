@@ -1,0 +1,3 @@
+        <Setting name="Proxy type">1</Setting>
+        <Setting name="Proxy host">PMHOSTTAG</Setting>
+        <Setting name="Proxy port">PMPORTTAG</Setting>

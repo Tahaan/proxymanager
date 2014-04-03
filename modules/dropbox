@@ -15,18 +15,18 @@ case "$1" in
   on)
      echo Enabling for Dropbox
      ParseTemplate $PM_INSTALL_DIR/templates/enable_bashrc > $TEMPFILE
-     . $TEMPFILE
-     (dropbox stop
+     ( . $TEMPFILE
+      dropbox stop
       dropbox start) >/dev/null
     ;;
   off)
      echo Disabling for Dropbox
-     unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
-     (dropbox stop
-     dropbox start) >/dev/null
+     (unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
+      dropbox stop
+      dropbox start) >/dev/null
     ;;
   check)
-    DROPBXPID=$(ps -e -o pid,cmd |grep "[d]ropbox" |awk '{print $1}')
+    DROPBXPID=$(pgrep -U ${PM_USERNAME} dropbox)
     [ ! -f /proc/$DROPBXPID/environ ] && DROPB_CHECK="Not Running" || DROPB_CHECK=$(strings /proc/$DROPBXPID/environ |grep -ci _proxy)
     echo Dropbox: $DROPB_CHECK
     ;;

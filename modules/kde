@@ -1,6 +1,6 @@
 #!/bin/bash
 # This file is part of ProxyManager
-# Copyright 2013 Johan Hartzenberg 
+# Copyright 2014 Johan Hartzenberg 
 # ProxyManager is distributed under the terms of the GNU General Public License
 # See the included README file for contact and additional information
 # See the included COPYING file for licensing information
@@ -18,15 +18,18 @@ TEMPFILE=/tmp/pon.kioslaverc
 
 . $PM_INSTALL_DIR/modules/.sharedfunctions
 
-if [ -f "$KDE_CF" ]
-then
+switch_kde() {
+     case "$1" in
+     1)
+       ParseTemplate $PM_INSTALL_DIR/templates/enable_kde ;;
+     0)
+       sed -ie "s/ProxyType=./ProxyType=0/" ${KDE_CF} ;;
+     esac > $TEMPFILE
+     cp $TEMPFILE ${KDE_CF}
+     dbus-send --type=signal /KIO/Scheduler org.kde.KIO.Scheduler.reparseSlaveConfiguration string:""
+}
 
-    switch_kde() {
-       sed -ie "s/ProxyType=./ProxyType=$1/" $KDE_CF
-       dbus-send --type=signal /KIO/Scheduler org.kde.KIO.Scheduler.reparseSlaveConfiguration string:""
-    }
-
-    case "$1" in
+case "$1" in
       on)
         echo Enabling for KDE global
         switch_kde 1
@@ -47,5 +50,5 @@ then
         KDE_CHECK=$( [ -f $KDE_CF ] && grep -c ProxyType=1 $KDE_CF || KDE_CHECK=N/A )
         echo "KDE: $KDE_CHECK"
         ;;
-    esac
-fi
+esac
+

@@ -1,5 +1,5 @@
-# Add soft-links here for modules to include them during the "switch-off"
-# process. Links are named D##module or suD##modules
+# Add soft-links here to activate modules to be used during the Disable Proxy 
+# setting process. Links are to be named D##module or suD##modules
 # Example:
 # D01bashrc -> ../modules/bashrc
 # suD33apt -> ../modules/apt
@@ -8,5 +8,4 @@
 #       Links to modules starting with D will be sourced inline
 #       Links not starting with either D or suD will be ignored.
 #
-# By default there will not be any links in this directory - all modules are
-# effectively disabled by default.
+# There are no links in this directory by default - eg no modules active

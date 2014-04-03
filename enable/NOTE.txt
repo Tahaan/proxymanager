@@ -1,5 +1,5 @@
-# Add soft-links here for modules to include them during the "switch-on" process
-# as well as during the check status process.
+# Add soft-links here to activate modules to be used during the Enable Proxy 
+# setting process as well as during the check status process.
 #
 # Links are named E##module or suE##modules
 # Example:
@@ -10,5 +10,4 @@
 #       Links to modules starting with E will be sourced inline
 #       Links not starting with either E or suE will be ignored.
 #
-# There are no links in this directory by default - all modules are disabled 
-# by default.
+# There are no links in this directory by default - eg no modules active

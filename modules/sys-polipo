@@ -1,0 +1,46 @@
+#!/bin/sh
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# ProxyManager module to set System-wide Uptream/parent proxy for Polipo
+# The Polipo service will be restarted
+
+# Run with root priv to affect Global System Configuration
+
+. /etc/proxymanager.conf
+POL_CF=/etc/polipo/config
+TEMPFILE=/tmp/pon.polipo
+[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
+
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
+case "$1" in
+  on)
+    echo Enabling for Polipo
+    if [ -f $POL_CF ]
+    then
+        grep -vi "^[^#].*parentProxy.*=." $POL_CF > $TEMPFILE
+        ParseTemplate $PM_INSTALL_DIR/templates/enable_polipo >> $TEMPFILE
+        mv $TEMPFILE $POL_CF
+        /etc/init.d/polipo restart
+    fi
+    /etc/init.d/polipo restart
+    ;;
+  off)
+    echo Disabling for Polipo
+    if [ -f $POL_CF ]
+    then
+        # CommentLines "parentProxy." <$POL_CF >$TEMPFILE
+        sed 's/^[^#]*parentProxy./# &/' $POL_CF > $TEMPFILE
+        mv $TEMPFILE $POL_CF
+        /etc/init.d/polipo restart
+    fi    
+    ;;
+  check)
+    POL_CHECK=$( [ ! -d /etc/polipo ] && echo N/A || cat /etc/polipo/config | grep -ci "^[^#]*parentproxy *=." 2>/dev/null )
+    echo Polipo: $POL_CHECK
+    ;;
+esac

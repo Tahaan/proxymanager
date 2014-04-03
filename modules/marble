@@ -1,0 +1,36 @@
+#!/bin/sh
+# ProxyManager module for Marble Virtual Globe
+# This file is part of ProxyManager
+# Copyright 2014 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# You need to restart any already running Marble instances.
+
+MARBLE_CF=$PM_USERHOME/.kde*/share/config/marblerc
+TEMPFILE=/tmp/pon.marble
+[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
+
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
+case "$1" in
+  on)
+    echo Enabling for Marble
+    sed '/\[Cache\]/,/^$/ d' $MARBLE_CF > $TEMPFILE
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_marble >> $TEMPFILE
+    mv $TEMPFILE $MARBLE_CF
+    pgrep marble >/dev/null && echo "   Restart Marble for changed setting to take effect"
+    ;;
+  off)
+    echo Disabling for Marble
+    sed '/\[Cache\]/,/^$/ d' $MARBLE_CF > $TEMPFILE
+    ParseTemplate $PM_INSTALL_DIR/templates/disable_marble >> $TEMPFILE
+    mv $TEMPFILE $MARBLE_CF
+    pgrep marble >/dev/null && echo "   Restart Marble for changed setting to take effect"
+    ;;
+  check)
+    MARBLE_CHECK=$( [ -f $MARBLE_CF ] && grep -c "^http-proxy.*=.*[a-z]" $MARBLE_CF 2>/dev/null || MARBLE_CHECK=None )
+    echo Marble: $MARBLE_CHECK
+    ;;
+esac

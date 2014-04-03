@@ -1,6 +1,10 @@
 This Document details on How proxy settings may be controlled for programs
 which are supported by existing ProxyManager modules.
 
+*****
+NOTE This document is badly out of date
+*****
+
 This file is part of ProxyManager
 Copyright 2013 Johan Hartzenberg 
 ProxyManager is distributed under the terms of the GNU General Public License

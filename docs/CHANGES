@@ -1,13 +1,21 @@
 History / log of changes in ProxyManager
 
-<<<<<<< HEAD
+2014-01- (v0.9.6)
+Fixed KDE module to allow change of Proxy settings on Enable or Proxy setting
+  even when Proxy was not previously configured. (Issue #17), including 
+  fix of error in the template/enable_kde file
+Clarified Enable/Disable directory Notes (enable/NOTE.txt and disable/NOTE.txt)
+Fix error in vlc module (Issue #18)
+Added module for marble
+Added new module for FileZilla
+Added new root module for Polipo !!!! (To enable/disable Upstream/parent proxy)
+Fixed Dropbox module assumption that there is only one user/instance of dropbox on the system (Issue #19)
+
 2014-01-14 (v0.9.5)
 Updated Setup to allow configuring of Proxy Host and port (Issue #12)
-Added new Module for Freshclam, the ClamAV virus database updater
-Added new module for VLC.
+Added new sys-clamav module for Freshclam, the ClamAV virus database updater
+Added new vlc module for VideoLAN client.
 
-=======
->>>>>>> parent of b472e53... Issue 12 - Setup Script can now configure Proxy Host and Port
 2014-01-13 (v0.9.1)
 Minor tiping/editing corrections
 Fixed disable_bash and disable_cshrc templates which got switched around.

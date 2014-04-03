@@ -1,0 +1,38 @@
+#!/bin/sh
+# ProxyManager module for FileZilla
+# This file is part of ProxyManager
+# Copyright 2014 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# You may need to restart any already running FileZilla instances.
+
+
+FZ_CF=$PM_USERHOME/.filezilla/filezilla.xml
+TEMPFILE=/tmp/pon.fz
+[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
+
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
+case "$1" in
+  on)
+    echo Enabling for FileZilla
+    #grep -v "^[^#]*http-proxy.* =" $FZ_CF > $TEMPFILE
+    #Update 3 items in XML file!
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_filezilla >> $TEMPFILE
+    mv $TEMPFILE $FZ_CF
+    ;;
+  off)
+    echo Disabling for FileZilla
+    #grep -v "^[^#]http-proxy.*=" $FZ_CF > $TEMPFILE
+    #cat $PM_INSTALL_DIR/templates/disable_filezilla >> $TEMPFILE
+    # Change 1 setting in XML file
+    sed 's/Proxy type">1</Proxy type">0</' < $FZ_CF > $TEMPFILE
+    mv $TEMPFILE $FZ_CF
+    ;;
+  check)
+    FZ_CHECK=$( [ -f $FZ_CF ] && grep -c '<Setting name="Proxy type">1</Setting>' $FZ_CF 2>/dev/null || FZ_CHECK=None )
+    echo FileZilla: $FZ_CHECK
+    ;;
+esac
