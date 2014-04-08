@@ -101,38 +101,55 @@ Standard Modules included
      		Updates .curlrc configuration file for user
      5  dropbox
      		Restart DropBox program with updated environment
-     6  git
+     6  filezilla
+     		Update FileZilla client proxy settings
+     7  git
                 Updates the Git global configuration setting
-     7  gnome
+     8  gnome
           	Updates Gnome Global setting for GTK native (desktop)
 		applications.
-     8  kde
+     9  marble
+     		Update Marble (Globe viewer) program proxy settings
+     10  kde
      		Updates KDE kio setting and signal dbus to update KDE/qt native 
 		Desktop applications of proxy setting change.
-     9  root_bashrc
+     11  root_bashrc
 		Updates .bashrc for root environment variables, affects new
 		processes.
-    10  root_curl
+     12  root_curl
 		Updates .curlrc configuration file for root
-    11  s3cmd
+     13  s3cmd
     		Updates s3cmd configuration file setting for proxy
-    12  sys-apt
+     14  sys-apt
 		Updates configuration file for apt-get etc.  Requires root priv
-    13  sysenvironment
+     15  sys-clam
+		Updates configuration file for FreshClam ClamAV signatures 
+		updater service. Requires root priv
+
+     16  sysenvironment
 		Updates /etc/environment configuration file for desktop 
                 applications.  Generally this requires logout/login.
-    14  sysproxy-suse
+     17  sys-polipo
+		Updates upstream proxy setting for Polipo Proxy server. 
+		Requires root priv
+     18  sysproxy-suse
 		Updates System-wide proxy setting /etc/sysconfig/proxy
-    15  sys-yum
+     19  sys-yum
  		Updates System-wide proxy setting for Yum package manager   
-    16  virtualbox
-		Updates VirtualBox management proxy setting via VBoxManage
-    17  wgetrc
+     20  virtualbox
+		Updates VirtualBox GUI admin interface proxy setting. Note:
+		This is just used for chacking for and downloading updates of
+		VirtualBox itself.
+     21  vlc
+     		Update VLC client proxy settings.  A running instance of the 
+     		VLC client will not be updated dynamically and requires the 
+     		user to manually restart the client.
+     22  wgetrc
     		Updates .wgetrc configuration file for user
-    18  wine_ie
+     23  wine_ie
 		Uses the WINE regedit to set the IE proxy setting.
 
-
+		
 Prerequisites
 -------------
 Having a working "Sudo" installation is highly recommended, and required to 
