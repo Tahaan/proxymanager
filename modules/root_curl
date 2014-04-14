@@ -10,10 +10,10 @@
 
 . /etc/proxymanager.conf
 RCURL_CF=~root/.curlrc
-TEMPFILE=/tmp/pon.rcurl
-[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
 . $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile rootcurl
+
 
 case "$1" in
   on)
@@ -31,7 +31,13 @@ case "$1" in
     fi
     ;;
   check)
-    RCURL_CHECK=$( [ -f $RCURL_CF ] && grep -c "^[^#]*proxy =" $RCURL_CF 2>/dev/null || RCURL_CHECK=None )
-    echo Root Curl: $RCURL_CHECK
+    if [ ! -f $RCURL_CF ]
+    then  RCURL_CHECK="Not Found"
+    elif [ $( grep -c "^[^#]*proxy =" $RCURL_CF 2>/dev/null ) -eq 0 ]
+      then RCURL_CHECK=Off
+      else RCURL_CHECK=On
+    fi
+    echo Root Curl: $RCURL_CHECK   
+    ;;
 esac
 

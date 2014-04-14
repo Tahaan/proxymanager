@@ -12,35 +12,34 @@
 
 . /etc/proxymanager.conf
 POL_CF=/etc/polipo/config
-TEMPFILE=/tmp/pon.polipo
-[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
 . $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile polipo
 
 case "$1" in
   on)
     echo Enabling for Polipo
-    if [ -f $POL_CF ]
-    then
-        grep -vi "^[^#].*parentProxy.*=." $POL_CF > $TEMPFILE
-        ParseTemplate $PM_INSTALL_DIR/templates/enable_polipo >> $TEMPFILE
-        mv $TEMPFILE $POL_CF
-        /etc/init.d/polipo restart
-    fi
+    [ -f $POL_CF ] || exit
+    grep -vi "^[^#].*parentProxy.*=." $POL_CF > $TEMPFILE
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_polipo >> $TEMPFILE
+    mv $TEMPFILE $POL_CF
     /etc/init.d/polipo restart
     ;;
   off)
     echo Disabling for Polipo
-    if [ -f $POL_CF ]
-    then
+    [ -f $POL_CF ] || exit
         # CommentLines "parentProxy." <$POL_CF >$TEMPFILE
-        sed 's/^[^#]*parentProxy./# &/' $POL_CF > $TEMPFILE
-        mv $TEMPFILE $POL_CF
-        /etc/init.d/polipo restart
-    fi    
+    sed 's/^[^#]*parentProxy./# &/' $POL_CF > $TEMPFILE
+    mv $TEMPFILE $POL_CF
+    /etc/init.d/polipo restart
     ;;
   check)
-    POL_CHECK=$( [ ! -d /etc/polipo ] && echo N/A || cat /etc/polipo/config | grep -ci "^[^#]*parentproxy *=." 2>/dev/null )
+    if [ ! -d /etc/polipo ]
+    then POL_CHECK="Not Found"
+    elif [ $( cat $POL_CF | grep -ci "^[^#]*parentproxy *=." 2>/dev/null ) -eq 0 ]
+      then POL_CHECK=Off
+      else POL_CHECK=On
+    fi
     echo Polipo: $POL_CHECK
     ;;
 esac

@@ -13,10 +13,10 @@
 # it works just perfectly ... for me.  YMMV
 
 S3CMD_CF=$PM_USERHOME/.s3cfg
-TEMPFILE=/tmp/pon.s3cfg
-[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
 . $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile s3cfg
+
 
 case "$1" in
   on)
@@ -32,7 +32,12 @@ case "$1" in
     mv $TEMPFILE $S3CMD_CF
     ;;
   check)
-    S3CMD_CHECK=$( [ -f $S3CMD_CF ] && grep -c "^[^#]*proxy_host* =.*[a-z]" $S3CMD_CF 2>/dev/null || S3CMD_CHECK=None )
+    if [ ! -f $S3CMD_CF ]
+    then  S3CMD_CHECK="Not Found"
+    elif [ $( grep -c "^[^#]*proxy_host* =.*[a-z]" $S3CMD_CF 2>/dev/null ) -eq 0 ]
+      then S3CMD_CHECK=Off
+      else S3CMD_CHECK=On
+    fi
     echo S3cmd: $S3CMD_CHECK
     ;;
 esac

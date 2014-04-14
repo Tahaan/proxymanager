@@ -13,27 +13,33 @@
 
 SUSE_CF=/etc/sysconfig/proxy
 . /etc/proxymanager.conf
-TEMPFILE=/tmp/pon.suse-sys
-[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
 . $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile suse-sys
 
 case "$1" in
   on)
     echo Enabling for Suse
+    [ -f $SUSE_CF ] || exit
     sed '/ENABLED/ s/"no"/"yes"/' <$SUSE_CF > $TEMPFILE
     mv $TEMPFILE $SUSE_CF
     echo "    Logout and back or reboot may be required"
     ;;
   off)
-    echo Disabling proxy for Suse
+    echo Disabling for Suse
+    [ -f $SUSE_CF ] || exit
     sed '/ENABLED/ s/"yes"/"no"/' <$SUSE_CF > $TEMPFILE
-    #replace 'ENABLED="yes' 'ENABLED="no'  -- $SUSE_CF
     mv $TEMPFILE $SUSE_CF
     echo "    Logout and back or reboot may be required"
     ;;
   check)
-    SUSE_CHECK=$( [ -f $SUSE_CF && grep -c "ENABLED=.*yes" $SUSE_CF 2>/dev/null || SUSE_CHECK=N/A )
-    echo Suse-System: $SUSE_CHECK
+    if [ ! -f $SUSE_CF ]
+    then SUSE_CHECK="Not Found"
+    elif [ $( grep -c "ENABLED=.*yes" $SUSE_CF 2>/dev/null ) -eq 0 ]
+       then SUSE_CHECK=Off
+       else SUSE_CHECK=On
+    fi
+    echo Suse-System: $SUSE_CHECK  
+    ;;
 esac
 

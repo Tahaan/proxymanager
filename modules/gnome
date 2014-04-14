@@ -5,7 +5,7 @@
 # See the included README file for contact and additional information
 # See the included COPYING file for licensing information
 
-# This ProxyManager module switches the KDE global Proxy setting on and off for
+# This ProxyManager module switches the GNOME global Proxy setting on and off for
 # compliant application, i.e many if not actually most GTK applications.
 
 # Note I copied the method from somewhere on the web.  Testing is sorely lacking.
@@ -13,15 +13,26 @@
 case "$1" in
   on)
     echo Enabling for Gnome
+    which gsettings > /dev/null || exit
     gsettings set org.gnome.system.proxy mode 'manual'
     gsettings set org.gnome.system.proxy.http port $PM_PROXY_PORT
     gsettings set org.gnome.system.proxy.http host $PM_PROXY_HOST
     ;;
   off)
     echo Disabling for Gnome
+    which gsettings > /dev/null || exit
     gsettings set org.gnome.system.proxy mode 'none'
     ;;
   check)
-    echo Gnome: $( gsettings get org.gnome.system.proxy mode  )
+    if ! which gsettings > /dev/null
+    then GNOME_CHECK="Not Found"
+    else
+       GNOMEMODE=$(gsettings get org.gnome.system.proxy mode)
+       if [ "$GNOMEMODE" = "'none'" ]
+       then GNOME_CHECK=Off
+       else GNOME_CHECK=On
+       fi
+    fi
+    echo Gnome: $GNOME_CHECK
     ;;
 esac

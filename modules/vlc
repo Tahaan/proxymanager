@@ -9,10 +9,9 @@
 # You need to restart any already running VLC instances.
 
 VLC_CF=$PM_USERHOME/.config/vlc/vlcrc
-TEMPFILE=/tmp/pon.vlc
-[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
 . $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile vlc
 
 case "$1" in
   on)
@@ -30,7 +29,12 @@ case "$1" in
     pgrep -U ${PM_USERNAME} vlc >/dev/null && echo "   Restart VideoLAN/VLC client for changed setting to take effect"
     ;;
   check)
-    VLC_CHECK=$( [ -f $VLC_CF ] && grep -c "^http-proxy.*=.*[a-z]" $VLC_CF 2>/dev/null || VLC_CHECK=None )
+    if [ ! -f $VLC_CF ]
+    then VLC_CHECK="Not Found"
+    elif [ $( grep -c "^http-proxy.*=.*[a-z]" $VLC_CF 2>/dev/null ) -eq 0 ]
+      then VLC_CHECK=Off
+      else VLC_CHECK=On
+    fi
     echo VLC: $VLC_CHECK
     ;;
 esac

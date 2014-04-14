@@ -10,10 +10,9 @@
 
 . /etc/proxymanager.conf
 RBASH_CF=~root/.bashrc
-TEMPFILE=/tmp/pon.rbash
-[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
 . $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile rootbash
 
 case "$1" in
   on)
@@ -31,8 +30,14 @@ case "$1" in
         mv $TEMPFILE $RBASH_CF
     fi
     ;;
-  check)
-    RBASH_CHECK=$( [ -f $RBASH_CF ] && grep -ci "^[^#]*_proxy=" $RBASH_CF 2>/dev/null || RBASH_CHECK=None )
-    echo Root Bash: $RBASH_CHECK
+  check)    
+    if [ ! -f $RBASH_CF ]
+    then RBASH_CHECK="Not Found"
+    elif [ $( grep -ci "^[^#]*_proxy=" $RBASH_CF 2>/dev/null ) -eq 0 ]
+      then RBASH_CHECK=Off
+      else RBASH_CHECK=On
+    fi    
+    echo "Root BashRC: $RBASH_CHECK"    
+    ;;
 esac
 

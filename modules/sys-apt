@@ -22,6 +22,7 @@ APT_CF=/etc/apt/apt.conf.d/00pon_proxy
 case "$1" in
   on)
     echo Enabling for APT
+    [ -d /etc/apt ] || exit
     ParseTemplate $PM_INSTALL_DIR/templates/enable_apt > $APT_CF
     ;;
   off)
@@ -29,7 +30,12 @@ case "$1" in
     [ -f "$APT_CF" ] && rm $APT_CF
     ;;
   check)
-    APT_CHECK=$( [ ! -d /etc/apt ] && echo N/A || cat /etc/apt/apt.conf.d/* | grep -ci "[^#]*proxy" 2>/dev/null )
+    if [ ! -d /etc/apt ]
+    then APT_CHECK="Not Found"
+    elif [ $( cat /etc/apt/apt.conf.d/* | grep -ci "[^#]*proxy" 2>/dev/null ) -eq 0 ]
+       then APT_CHECK=Off
+       else APT_CHECK=On
+    fi
     echo APT: $APT_CHECK
     ;;
 esac

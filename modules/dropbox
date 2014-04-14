@@ -7,27 +7,35 @@
 
 # ProxyManager module to restart DropBox with/without proxy environment variables
 
-TEMPFILE=/tmp/pon.dropbox
-
 . $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile dropbox
 
 case "$1" in
   on)
      echo Enabling for Dropbox
+     which dropbox > /dev/null || exit
      ParseTemplate $PM_INSTALL_DIR/templates/enable_bashrc > $TEMPFILE
      ( . $TEMPFILE
-      dropbox stop
-      dropbox start) >/dev/null
+         dropbox stop
+         dropbox start
+     ) >/dev/null
     ;;
   off)
      echo Disabling for Dropbox
+     which dropbox > /dev/null || exit
      (unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
-      dropbox stop
-      dropbox start) >/dev/null
+         dropbox stop
+         dropbox start
+        ) >/dev/null
     ;;
   check)
     DROPBXPID=$(pgrep -U ${PM_USERNAME} dropbox)
-    [ ! -f /proc/$DROPBXPID/environ ] && DROPB_CHECK="Not Running" || DROPB_CHECK=$(strings /proc/$DROPBXPID/environ |grep -ci _proxy)
+    if [ ! -f /proc/$DROPBXPID/environ ]
+    then  DROPB_CHECK="Not Running"
+    elif [ $( strings /proc/$DROPBXPID/environ | grep -ci _proxy ) -eq 0 ]
+      then DROPB_CHECK=Off
+      else DROPB_CHECK=On
+    fi
     echo Dropbox: $DROPB_CHECK
     ;;
 esac

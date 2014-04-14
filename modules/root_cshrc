@@ -17,41 +17,38 @@
 #    Google Earth
 #    DropBox client
 
-CSH_CF=$PM_USERHOME/.cshrc
+. /etc/proxymanager.conf
+RCSH_CF=~root/.cshrc
 . $PM_INSTALL_DIR/modules/.sharedfunctions
-GetUniqueTempFile cshrc
+GetUniqueTempFile root-cshrc
 
 
 case "$1" in
   on)
-    echo Enabling for Csh
-    grep -vi "^[^#]*_proxy" $CSH_CF > $TEMPFILE
+    echo Enabling for Root Csh
+    grep -vi "^[^#]*_proxy" $RCSH_CF > $TEMPFILE
     ParseTemplate $PM_INSTALL_DIR/templates/enable_cshrc >> $TEMPFILE
-    cp $TEMPFILE $CSH_CF
+    cp $TEMPFILE $RCSH_CF
     echo "    Restart terminal to affect"
     ;;
   off)
-    echo Disabling for Csh
+    echo Disabling for Root Csh
     if [ -f $BASSH_CF ]
     then
-        grep -vi "^[^#]*_proxy" $CSH_CF > $TEMPFILE
+        grep -vi "^[^#]*_proxy" $RCSH_CF > $TEMPFILE
         cat $PM_INSTALL_DIR/templates/disable_cshrc >> $TEMPFILE
-        mv $TEMPFILE $CSH_CF
+        mv $TEMPFILE $RCSH_CF
     fi
     echo "    Restart terminal to affect"
     ;;
 
   check)   
-    if [ ! -f $CSH_CF ]
-    then CSH_CHECK="Not Found"
-    elif [ $( grep -ci "^[^#]*setenv .*_proxy .*http.*" $CSH_CF 2>/dev/null ) -eq 0 ]
-      then CSH_CHECK=Off
-      else CSH_CHECK=On
+    if [ ! -f $RCSH_CF ]
+    then RCSH_CHECK="Not Found"
+    elif [ $( grep -ci "^[^#]*setenv .*_proxy .*http.*" $RCSH_CF 2>/dev/null ) -eq 0 ]
+      then RCSH_CHECK=Off
+      else RCSH_CHECK=On
     fi
-    case "$http_proxy" in
-      http://*) [ "$CSH_CHECK" = "Off" ] && THIS_SHELL="(On in current shell)" || THIS_SHELL="";;
-      *) [ "$CSH_CHECK" = "On" ] && THIS_SHELL="(Off in current shell)" || THIS_SHELL="" ;;
-    esac      
-    echo "Csh: $CSH_CHECK $THIS_SHELL"    
+    echo "Root Csh: $RCSH_CHECK"    
     ;;
 esac

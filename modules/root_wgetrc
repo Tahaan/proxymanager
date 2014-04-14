@@ -1,0 +1,36 @@
+#!/bin/bash
+# ProxyManager module for Wget
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+. /etc/proxymanager.conf
+RWGET_CF=~root/.wgetrc
+
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile root-wgetrc
+
+case "$1" in
+  on)
+    echo Enabling for Root wget
+    [ -f $RWGET_CF ] && grep -v "^[^#]*_proxy" $RWGET_CF > $TEMPFILE
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_wgetrc >> $TEMPFILE
+    mv $TEMPFILE $RWGET_CF
+    ;;
+  off)
+    echo Disabling for Root wget
+    grep -v "^[^#]*_proxy" $RWGET_CF > $TEMPFILE
+    mv $TEMPFILE $RWGET_CF
+    ;;
+  check)
+    if [ ! -f $RWGET_CF ]
+    then RWGET_CHECK="Not Found"
+    elif [ $( grep -c "^[^#]*_proxy" $RWGET_CF 2>/dev/null ) -eq 0 ]
+      then RWGET_CHECK=Off
+      else RWGET_CHECK=On
+    fi
+    echo Root Wget: $RWGET_CHECK
+    ;;
+esac

@@ -23,15 +23,16 @@
 # doesn't really harm normal modules.
 . /etc/proxymanager.conf
 
+# Source the shared functions to set up a TempFile, Parse Config templates, 
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+
 # Specify path to config file for this application
 # For user modules you can use PM_USERNAME, eg:
 # MODULEX_CF=$PM_USERHOME/.wgetrc
 MODULEX_CF=....  
 
 # If needed give it a Temp work file
-TEMPFILE=/tmp/pon.MODULE
-# And make sure it is clean
-rm $TEMPFILE || exit 3
+GetUniqueTempFile MODULENAME
 
 # History lesson:  Why do I see "pon" everywhere?
 # Because this whole system started off as a shell alias called "pon", short
@@ -43,11 +44,13 @@ case "$1" in
     # Remove Old Proxy settings from Application Config file
     [ -f $MODULEX_CF ] && grep -v "^[^#].*_proxy" $MODULEX_CF > $TEMPFILE
     # Add Entried from the Template to the New Config File
-    cat $PM_INSTALL_DIR/templates/enable_MyApplication >> $TEMPFILE
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_MODULENAME >> $TEMPFILE
     # Overwrite the main config file 
     mv $TEMPFILE $MODULEX_CF
     # And maybe signal the application
     kill -HUP $( pgrep MyApplication )
+       # Or possible restart the application, or check if it is running and 
+       # tell the user to restart it, etc.
     ;;
   off)
     echo Disabling for MyApplication

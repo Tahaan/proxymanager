@@ -10,3 +10,13 @@ ParseTemplate() {
     sed 's/PMHOSTTAG/'${PM_PROXY_HOST}'/g; s/PMPORTTAG/'${PM_PROXY_PORT}'/g' $1
 }
 
+# Future function that will likely be useful in several modules, 
+# particularly when disabling.
+CommentLines() {
+  sed 's/^[^#]*'"$1"'/# &/'
+}
+
+GetUniqueTempFile() {
+   TEMPFILE=/tmp/.ProxyManager.$$.$1
+   [ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
+}

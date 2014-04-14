@@ -9,23 +9,28 @@
 # VirtualBox uses this for checking for and downloading updates.  This does not
 # affect VirtualBox networking in any way.
 
-TEMPFILE=/tmp/pon.virtualbox
-
 . $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile virtualbox
 
 case "$1" in
   on)
     echo Enabling for VirtualBox
     ParseTemplate $PM_INSTALL_DIR/templates/enable_virtualbox > $TEMPFILE
-    VBoxManage setextradata global GUI/ProxySettings $(cat $TEMPFILE)
+    which VBoxManage > /dev/null && VBoxManage setextradata global GUI/ProxySettings $(cat $TEMPFILE)
     ;;
   off)
     echo Disabling for VirtualBox
-    VBoxManage setextradata global GUI/ProxySettings "proxyDisabled,,,authDisabled,,"
+    which VBoxManage > /dev/null && VBoxManage setextradata global GUI/ProxySettings "proxyDisabled,,,authDisabled,,"
     ;;
 
   check)
-    VBOX_CHECK=$(VBoxManage getextradata global GUI/ProxySettings|grep -c "proxyEnabled,..*,..*")
+    if ! which VBoxManage > /dev/null
+    then VBOX_CHECK="Not Found"
+    elif [ $( VBoxManage getextradata global GUI/ProxySettings|grep -c "proxyEnabled,..*,..*" ) -eq 0 ]
+       then VBOX_CHECK=Off
+       else VBOX_CHECK=On
+    fi
+    ## VBOX_CHECK=$(VBoxManage getextradata global GUI/ProxySettings|grep -c "proxyEnabled,..*,..*")
     echo VirtualBox: $VBOX_CHECK
     ;;
 esac

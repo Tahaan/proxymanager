@@ -14,16 +14,21 @@ GIT_CF=$PM_USERHOME/.gitconfig
 case "$1" in
   on)
     echo Enabling for Git global
+    which git > /dev/null || exit
     git config --global http.proxy http://${PM_PROXY_HOST}:${PM_PROXY_PORT}
     ;;
-
   off)
     echo Disabling for Git global
+    which git > /dev/null || exit
     git config --global http.proxy ""
     ;;
-
   check)
-    GIT_CHECK=$( git config --global http.proxy | grep -c http ) || GIT_CHECK=None
+    if ! which git > /dev/null
+    then GIT_CHECK="Not Found"
+    elif [ $( git config --global http.proxy | grep -c http ) -eq 0 ]
+       then GIT_CHECK=Off
+       else GIT_CHECK=On
+    fi
     echo "Git: $GIT_CHECK"
     ;;
 esac

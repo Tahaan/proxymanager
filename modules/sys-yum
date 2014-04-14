@@ -14,24 +14,31 @@
 
 . /etc/proxymanager.conf
 YUM_CF=/etc/yum.conf
-TEMPFILE=/tmp/pm.yum
 
 . $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile yum
 
 case "$1" in
   on)
     echo Enabling for Yum
+    [ -f $YUM_CF ] || exit
     ParseTemplate $PM_INSTALL_DIR/templates/enable_yum > $TEMPFILE
     grep -v "[^#]*proxy=" $YUM_CF > $TEMPFILE
     mv $TEMPFILE $YUM_CF
     ;;
   off)
     echo Disabling for Yum
+    [ -f $YUM_CF ] || exit
     grep -v "[^#]*proxy=" $YUM_CF > $TEMPFILE
     mv $TEMPFILE $YUM_CF
     ;;
   check)
-    YUM_CHECK=$( [ ! -f $YUM_CF ] && echo N/A || cat $YUM_CF | grep -ci "[^#]*proxy=" 2>/dev/null )
+    if [ ! -f $YUM_CF ]
+    then YUM_CHECK="Not Found"
+    elif [ $( cat $YUM_CF | grep -ci "[^#]*proxy=" 2>/dev/null ) -eq 0 ]
+       then YUM_CHECK=Off
+       else YUM_CHECK=On
+    fi
     echo Yum: $YUM_CHECK
     ;;
 esac

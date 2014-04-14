@@ -9,10 +9,9 @@
 # You need to restart any already running Marble instances.
 
 MARBLE_CF=$PM_USERHOME/.kde*/share/config/marblerc
-TEMPFILE=/tmp/pon.marble
-[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
 . $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile marble
 
 case "$1" in
   on)
@@ -20,7 +19,7 @@ case "$1" in
     sed '/\[Cache\]/,/^$/ d' $MARBLE_CF > $TEMPFILE
     ParseTemplate $PM_INSTALL_DIR/templates/enable_marble >> $TEMPFILE
     mv $TEMPFILE $MARBLE_CF
-    pgrep marble >/dev/null && echo "   Restart Marble for changed setting to take effect"
+    pgrep -U ${PM_USERNAME} marble >/dev/null && echo "   Restart Marble for changed setting to take effect"
     ;;
   off)
     echo Disabling for Marble
@@ -30,7 +29,12 @@ case "$1" in
     pgrep marble >/dev/null && echo "   Restart Marble for changed setting to take effect"
     ;;
   check)
-    MARBLE_CHECK=$( [ -f $MARBLE_CF ] && grep -c "^http-proxy.*=.*[a-z]" $MARBLE_CF 2>/dev/null || MARBLE_CHECK=None )
+    if [ ! -f $MARBLE_CF ]
+    then  MARBLE_CHECK="Not Found"
+    elif [ $( grep -c "^proxyUrl=http://.*[a-z]" $MARBLE_CF 2>/dev/null ) -eq 0 ]
+       then MARBLE_CHECK=Off
+       else MARBLE_CHECK=On
+    fi
     echo Marble: $MARBLE_CHECK
     ;;
 esac

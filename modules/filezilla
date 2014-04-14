@@ -10,10 +10,10 @@
 
 
 FZ_CF=$PM_USERHOME/.filezilla/filezilla.xml
-TEMPFILE=/tmp/pon.fz
-[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
 . $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile filezilla
+
 
 case "$1" in
   on)
@@ -32,7 +32,12 @@ case "$1" in
     mv $TEMPFILE $FZ_CF
     ;;
   check)
-    FZ_CHECK=$( [ -f $FZ_CF ] && grep -c '<Setting name="Proxy type">1</Setting>' $FZ_CF 2>/dev/null || FZ_CHECK=None )
+    if [ ! -f $FZ_CF ]
+    then  FZ_CHECK="Not Found"
+    elif [ $( grep -c '<Setting name="Proxy type">1</Setting>' $FZ_CF 2>/dev/null ) -eq 0 ]
+      then FZ_CHECK=Off
+      else FZ_CHECK=On
+    fi
     echo FileZilla: $FZ_CHECK
     ;;
 esac

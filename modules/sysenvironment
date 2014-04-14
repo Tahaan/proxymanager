@@ -9,30 +9,41 @@
 # This works for many desktop applications and services but requires logout/login
 # Generally requires a restart for most existing processes.
 
-SYSDEFAULT_CONFIG=/etc/environment
+SYSENV_CF=/etc/environment
 . /etc/proxymanager.conf
-TEMPFILE=/tmp/pon.environment
-[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
 . $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile sysenv
 
 case "$1" in
   on)
     echo Enabling for Sys Environment Global setting
-    grep -vi "^[^#]*_proxy=" $SYSDEFAULT_CONFIG > $TEMPFILE
-    cat $PM_INSTALL_DIR/templates/enable_environment >> $TEMPFILE
-    mv $TEMPFILE $SYSDEFAULT_CONFIG
-    echo "    Logout and back or restart system may be required"
+    if [ -f $SYSENV_CF ]
+    then
+       grep -vi "^[^#]*_proxy=" $SYSENV_CF > $TEMPFILE
+       cat $PM_INSTALL_DIR/templates/enable_environment >> $TEMPFILE
+       mv $TEMPFILE $SYSENV_CF
+       echo "    Logout and back or restart system may be required"
+    fi
     ;;
   off)
     echo Disabling for Sys Environment Global setting
-    grep -vi "^[^#]*_proxy=" $SYSDEFAULT_CONFIG > $TEMPFILE
-    mv $TEMPFILE $SYSDEFAULT_CONFIG
-    echo "    Logout and back or restart system may be required"
+    if [ -f $SYSENV_CF ]
+    then
+       grep -vi "^[^#]*_proxy=" $SYSENV_CF > $TEMPFILE
+       mv $TEMPFILE $SYSENV_CF
+       echo "    Logout and back or restart system may be required"
+    fi
     ;;
   check)
-    SYSDEFAULT_CHECK=$( [ -f $SYSDEFAULT_CONFIG ] && grep -ci "^[^#]*_proxy=." $SYSDEFAULT_CONFIG 2>/dev/null || SYSDEFAULT_CHECK=N/A )
-    echo Sys Environment Global setting: $SYSDEFAULT_CHECK
+    if [ ! -f $SYSENV_CF ]
+    then SYSENV_CHECK="Not Found"
+    elif [ $( grep -ci "^[^#]*_proxy=." $SYSENV_CF 2>/dev/null ) -eq 0 ]
+       then SYSENV_CHECK=Off
+       else SYSENV_CHECK=On
+    fi   
+    
+    echo Sys Environment: $SYSENV_CHECK
 
     #set -vx
     #SESMGRPID=$(ps -e -o pid,cmd |grep "[s]ession" |awk '{print $1}')

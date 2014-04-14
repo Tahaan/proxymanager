@@ -7,23 +7,34 @@
 # setting goes into the registry but whether anything actually uses it is a test
 # for which I need someone to do and report back on.
 
-TEMPFILE=/tmp/.pOn.wineie
-KEY=
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile wine-ie
 
 case "$1" in
   on)
     echo Enabling for Wine IE
     ParseTemplate $PM_INSTALL_DIR/templates/enable_wine_ie > $TEMPFILE
-    regedit $TEMPFILE
+    which regedit > /dev/null && regedit $TEMPFILE
     ;;
   off)
     echo Disabling for Wine IE
-    regedit $PM_INSTALL_DIR/templates/disable_wine_ie
+    which regedit > /dev/null && regedit $PM_INSTALL_DIR/templates/disable_wine_ie
     ;;
   check)
-    [ -f $TEMPFILE ] && rm $TEMPFILE
-    regedit -E $TEMPFILE "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\"
-    WINE_CK=$( grep -c ".ProxyEnable.=dword:0*1" $TEMPFILE || echo None )
-    echo Wine IE: $WINE_CK
+    if ! which regedit > /dev/null
+    then WINE_CHECK="Not Found"
+    else
+       [ -f $TEMPFILE ] && rm $TEMPFILE
+       if regedit -E $TEMPFILE "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\" 2> /dev/null
+       then 
+          SEARCH_COUNT=$(grep -c ".ProxyEnable.=dword:0*1" $TEMPFILE 2> /dev/null)
+          if [ $SEARCH_COUNT -eq 0 ]
+          then WINE_CHECK=Off
+          else WINE_CHECK=On
+          fi
+       else WINE_CHECK="Not Found"
+       fi
+    fi
+    echo Wine IE: $WINE_CHECK
     ;;
 esac

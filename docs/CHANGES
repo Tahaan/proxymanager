@@ -1,6 +1,18 @@
 History / log of changes in ProxyManager
 
-2014-01- (v0.9.6)
+2014-04-14 (v0.9.7)
+Marble now checks for processes owned by the executing user.
+All modules using a TEMPFILE updated to use a shared function to generate 
+  unique TEMPFILE file name: .sharedfunctions/GetUniqueTempFile(1)
+Sample Module updated with hint to use Shared Functions
+Fixed: Marble module always reports Proxy as disabled (Issue #20)
+Fixed: Unnecesary double restart of Polipo service in sys-polipo module (Issue #21)
+Fixed: Much improved output of proxymanager check command for all modules (Issue #11)
+New modules: root_cshrc and root_wgetrc (similar to root_bashrc and root_curl, 
+  counterparts for existing modules cshrc and wgetrc, but checking 
+  configuration files in the root user home directory in stead.
+
+2014-04-06 (v0.9.6)
 Fixed KDE module to allow change of Proxy settings on Enable or Proxy setting
   even when Proxy was not previously configured. (Issue #17), including 
   fix of error in the template/enable_kde file
@@ -29,7 +41,6 @@ New Modules:
  sys-yum
 Many documentation improvements
  
-
 2013-10-23 (v0.1.6)
 Bash module: Improve resilience against commented proxy settings via .bashrc file
 Bash module: Implement "explicit unset" method for disable via disable_template

@@ -18,10 +18,9 @@
 #    DropBox client
 
 BASH_CF=$PM_USERHOME/.bashrc
-TEMPFILE=/tmp/p0n.bashrc
-[ -f $TEMPFILE ] && ( rm $TEMPFILE || exit 3 )
 
 . $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile bashrc
 
 case "$1" in
   on)
@@ -43,7 +42,16 @@ case "$1" in
     ;;
 
   check)
-    BASH_CHECK=$( [ -f $BASH_CF ] && grep -ci "^[^#]*_proxy=" $BASH_CF 2>/dev/null || BASH_CHECK=None )
-    echo Bash: $BASH_CHECK \( http_proxy=\"$http_proxy\" \)
+    if [ ! -f $BASH_CF ]
+    then BASH_CHECK="Not Found"
+    elif [ $( grep -ci "^[^#]*_proxy=" $BASH_CF 2>/dev/null ) -eq 0 ]
+      then BASH_CHECK=Off
+      else BASH_CHECK=On
+    fi
+    case "$http_proxy" in
+      http://*) [ "$BASH_CHECK" = "Off" ] && THIS_SHELL="(On in current shell)" || THIS_SHELL="";;
+      *) [ "$BASH_CHECK" = "On" ] && THIS_SHELL="(Off in current shell)" || THIS_SHELL="" ;;
+    esac      
+    echo "Bash: $BASH_CHECK $THIS_SHELL"
     ;;
 esac
