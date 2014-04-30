@@ -30,7 +30,7 @@ case "$1" in
         mv $TEMPFILE $RCURL_CF
     fi
     ;;
-  check)
+  check*)
     if [ ! -f $RCURL_CF ]
     then  RCURL_CHECK="Not Found"
     elif [ $( grep -c "^[^#]*proxy =" $RCURL_CF 2>/dev/null ) -eq 0 ]

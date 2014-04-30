@@ -28,7 +28,7 @@ case "$1" in
          dropbox start
         ) >/dev/null
     ;;
-  check)
+  check*)
     DROPBXPID=$(pgrep -U ${PM_USERNAME} dropbox)
     if [ ! -f /proc/$DROPBXPID/environ ]
     then  DROPB_CHECK="Not Running"

@@ -21,7 +21,7 @@ case "$1" in
     #grep -v "^[^#]*http-proxy.* =" $FZ_CF > $TEMPFILE
     #Update 3 items in XML file!
     ParseTemplate $PM_INSTALL_DIR/templates/enable_filezilla >> $TEMPFILE
-    mv $TEMPFILE $FZ_CF
+    cp $TEMPFILE $FZ_CF
     ;;
   off)
     echo Disabling for FileZilla
@@ -29,9 +29,9 @@ case "$1" in
     #cat $PM_INSTALL_DIR/templates/disable_filezilla >> $TEMPFILE
     # Change 1 setting in XML file
     sed 's/Proxy type">1</Proxy type">0</' < $FZ_CF > $TEMPFILE
-    mv $TEMPFILE $FZ_CF
+    cp $TEMPFILE $FZ_CF
     ;;
-  check)
+  check*)
     if [ ! -f $FZ_CF ]
     then  FZ_CHECK="Not Found"
     elif [ $( grep -c '<Setting name="Proxy type">1</Setting>' $FZ_CF 2>/dev/null ) -eq 0 ]

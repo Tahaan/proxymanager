@@ -45,7 +45,7 @@ case "$1" in
          cp $TEMPFILE ${KDE_CF}
          ;;
 
-      check)
+      check*)
         if [ ! -f $KDE_CF ]
         then KDE_CHECK="Not Found"
         elif [ $( grep -c ProxyType=1 $KDE_CF 2>/dev/null ) -eq 0 ]

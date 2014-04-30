@@ -29,6 +29,22 @@ case "$1" in
          . ./$MODULE
       done
       ;;
+   checkall)
+      cd $PM_INSTALL_DIR/modules
+      # pwd
+      for MODULE in *
+      do
+          case "$MODULE" in
+             sys*|root*)
+                 # echo s $MODULE
+                 sudo ./$MODULE check 
+                 ;;
+             *)                 # echo u $MODULE
+                 . ./$MODULE 
+                 ;;
+          esac
+      done
+      ;;
    off)
       # First run all the unpriviledged user modules
       [ ! -z "$PM_USERMODULES" ] && [ -d "${PM_USERMODULES}" ] && cd "$PM_USERMODULES" || cd $PM_INSTALL_DIR/disable

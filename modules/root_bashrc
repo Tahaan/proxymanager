@@ -30,7 +30,7 @@ case "$1" in
         mv $TEMPFILE $RBASH_CF
     fi
     ;;
-  check)    
+  check*)    
     if [ ! -f $RBASH_CF ]
     then RBASH_CHECK="Not Found"
     elif [ $( grep -ci "^[^#]*_proxy=" $RBASH_CF 2>/dev/null ) -eq 0 ]

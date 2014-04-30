@@ -24,7 +24,7 @@ case "$1" in
     #stop cntlm
     /etc/init.d/cntlm stop
     ;;
-  check)
+  check*)
     CNTLM_CHECK=`/etc/init.d/cntlm status`
     echo CNTLM: "$CNTLM_CHECK"
     ;;

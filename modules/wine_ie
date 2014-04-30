@@ -20,7 +20,7 @@ case "$1" in
     echo Disabling for Wine IE
     which regedit > /dev/null && regedit $PM_INSTALL_DIR/templates/disable_wine_ie
     ;;
-  check)
+  check*)
     if ! which regedit > /dev/null
     then WINE_CHECK="Not Found"
     else

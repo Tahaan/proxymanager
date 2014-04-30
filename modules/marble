@@ -18,17 +18,17 @@ case "$1" in
     echo Enabling for Marble
     sed '/\[Cache\]/,/^$/ d' $MARBLE_CF > $TEMPFILE
     ParseTemplate $PM_INSTALL_DIR/templates/enable_marble >> $TEMPFILE
-    mv $TEMPFILE $MARBLE_CF
+    cp $TEMPFILE $MARBLE_CF
     pgrep -U ${PM_USERNAME} marble >/dev/null && echo "   Restart Marble for changed setting to take effect"
     ;;
   off)
     echo Disabling for Marble
     sed '/\[Cache\]/,/^$/ d' $MARBLE_CF > $TEMPFILE
     ParseTemplate $PM_INSTALL_DIR/templates/disable_marble >> $TEMPFILE
-    mv $TEMPFILE $MARBLE_CF
+    cp $TEMPFILE $MARBLE_CF
     pgrep marble >/dev/null && echo "   Restart Marble for changed setting to take effect"
     ;;
-  check)
+  check*)
     if [ ! -f $MARBLE_CF ]
     then  MARBLE_CHECK="Not Found"
     elif [ $( grep -c "^proxyUrl=http://.*[a-z]" $MARBLE_CF 2>/dev/null ) -eq 0 ]

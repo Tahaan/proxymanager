@@ -33,7 +33,7 @@ case "$1" in
     mv $TEMPFILE $POL_CF
     /etc/init.d/polipo restart
     ;;
-  check)
+  check*)
     if [ ! -d /etc/polipo ]
     then POL_CHECK="Not Found"
     elif [ $( cat $POL_CF | grep -ci "^[^#]*parentproxy *=." 2>/dev/null ) -eq 0 ]

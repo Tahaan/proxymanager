@@ -23,7 +23,7 @@ case "$1" in
     which VBoxManage > /dev/null && VBoxManage setextradata global GUI/ProxySettings "proxyDisabled,,,authDisabled,,"
     ;;
 
-  check)
+  check*)
     if ! which VBoxManage > /dev/null
     then VBOX_CHECK="Not Found"
     elif [ $( VBoxManage getextradata global GUI/ProxySettings|grep -c "proxyEnabled,..*,..*" ) -eq 0 ]

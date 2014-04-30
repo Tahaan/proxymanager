@@ -32,7 +32,7 @@ case "$1" in
     grep -v "[^#]*proxy=" $YUM_CF > $TEMPFILE
     mv $TEMPFILE $YUM_CF
     ;;
-  check)
+  check*)
     if [ ! -f $YUM_CF ]
     then YUM_CHECK="Not Found"
     elif [ $( cat $YUM_CF | grep -ci "[^#]*proxy=" 2>/dev/null ) -eq 0 ]

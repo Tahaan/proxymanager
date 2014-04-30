@@ -13,11 +13,24 @@ cd $PM_INSTALL_DIR
 if [ "$1" == list ]
 then
    cd $PM_INSTALL_DIR/enable
-   echo Root Modules Enabled via links in $( pwd )
-   ls -1L suE* | cat -n
+   SYSMODULES=$(echo suE*)
+   if [ -f "${SYSMODULES%% *}" ]
+   then
+      echo System Modules Enabled via links in $( pwd )
+      ls -1L suE* | cat -n
+   else
+      echo No System/root modules enabled
+   fi
+   # If PM_USERMODULES defines a directory for user modules, use it.
    [ -d "$PM_USERMODULES" ] && cd $PM_USERMODULES
-   echo User modules enabled via links in $( pwd )
-   ls -1L E* | cat -n
+   USRMODULES=$(echo E*)
+   if [ -f "${USRMODULES%% *}" ]   
+   then
+      echo User modules enabled via links in $( pwd )
+      ls -1L E* | cat -n
+   else
+      echo No User modules enabled via $(pwd)
+   fi
 elif [ "$1" == "avail" ]
 then
    cd modules

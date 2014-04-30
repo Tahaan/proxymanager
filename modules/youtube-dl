@@ -1,0 +1,44 @@
+#!/bin/sh
+# ProxyManager module for Youtube Downloader CLI client youtube-dl
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# Existing s3cmd processes needs to be restarted.
+
+YTDL_CF=$PM_USERHOME/.config/youtube-dl.conf
+
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile ytdl
+
+case "$1" in
+  on)
+    echo Enabling for Youtube-dl
+    [ -f $YTDL_CF ] && sed '/^--proxy ..[^ ]*$/ d; s/--proxy ..[^ ]*//g' $YTDL_CF > $TEMPFILE || rm -f $TEMPFILE
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_youtube-dl >> $TEMPFILE
+    cp $TEMPFILE $YTDL_CF
+    pgrep -U ${PM_USERNAME} youtube-dl >/dev/null && echo "   Restart Youtube-dl for changed setting to take effect"
+    ;;
+  off)
+    echo Disabling for Youtube-dl
+    if [ -f $YTDL_CF ]
+    then
+       sed 's/--proxy ..[^ ]*/--proxy \"\"/g' $YTDL_CF 
+    else
+       echo '--proxy \"\"'
+    fi > $TEMPFILE
+    cp $TEMPFILE $YTDL_CF
+    pgrep -U ${PM_USERNAME} youtube-dl >/dev/null && echo "   Restart Youtube-dl for changed setting to take effect"
+    ;;
+  check*)
+    if [ ! -f $YTDL_CF ]
+    then YTDL_CHECK="Not Found"
+    elif [ $( grep -v "^#" $YTDL_CF | grep -c -- "--proxy http://." 2>/dev/null ) -eq 0 ]
+      then YTDL_CHECK=Off
+      else YTDL_CHECK=On
+    fi
+    echo Youtube-dl: $YTDL_CHECK
+    ;;
+esac

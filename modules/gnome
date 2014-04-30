@@ -23,7 +23,7 @@ case "$1" in
     which gsettings > /dev/null || exit
     gsettings set org.gnome.system.proxy mode 'none'
     ;;
-  check)
+  check*)
     if ! which gsettings > /dev/null
     then GNOME_CHECK="Not Found"
     else

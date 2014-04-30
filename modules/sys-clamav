@@ -33,7 +33,7 @@ case "$1" in
     mv $TEMPFILE $FCLAM_CF
     /etc/init.d/clamav-freshclam restart
     ;;
-  check)
+  check*)
     if [ ! -f $FCLAM_CF ]
     then FCLAM_CHECK="Not Found"
     elif [ $( cat $FCLAM_CF | grep -ci "^HTTPProxy.*[a-zA-Z0-9]$" 2>/dev/null ) -eq 0 ]

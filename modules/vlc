@@ -18,17 +18,17 @@ case "$1" in
     echo Enabling for VLC
     grep -v "^http-proxy.* =" $VLC_CF > $TEMPFILE
     ParseTemplate $PM_INSTALL_DIR/templates/enable_vlc >> $TEMPFILE
-    mv $TEMPFILE $VLC_CF
+    cp $TEMPFILE $VLC_CF
     pgrep -U ${PM_USERNAME} vlc >/dev/null && echo "   Restart VideoLAN/VLC client for changed setting to take effect"
     ;;
   off)
     echo Disabling for VLC
     grep -v "^http-proxy.*=" $VLC_CF > $TEMPFILE
     cat $PM_INSTALL_DIR/templates/disable_vlc >> $TEMPFILE
-    mv $TEMPFILE $VLC_CF
+    cp $TEMPFILE $VLC_CF
     pgrep -U ${PM_USERNAME} vlc >/dev/null && echo "   Restart VideoLAN/VLC client for changed setting to take effect"
     ;;
-  check)
+  check*)
     if [ ! -f $VLC_CF ]
     then VLC_CHECK="Not Found"
     elif [ $( grep -c "^http-proxy.*=.*[a-z]" $VLC_CF 2>/dev/null ) -eq 0 ]

@@ -1,0 +1,43 @@
+#!/bin/sh
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# ProxyManager module for ClamTk Clam GUI
+# This script updates the ClamTK preferences to activate/deactivate the Proxy 
+# setting
+
+CLAM_CF=$PM_USERHOME/.clamtk/prefs
+CLAM_LOCAL_CF=$PM_USERHOME/.clamtk/db/local.conf
+
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile clamtk
+
+case "$1" in
+  on)
+    echo Enabling for ClamTk
+    sed -ie "s/HTTPProxy=./HTTPProxy=2/" ${CLAM_CF}
+    ParseTemplate $PM_INSTALL_DIR/templates/enable_clamtk > $TEMPFILE
+    grep -vi "^HTTPProxy" $CLAM_LOCAL_CF >> $TEMPFILE
+    cp $TEMPFILE $CLAM_LOCAL_CF
+    ;;
+  off)
+    echo Disabling for ClamTk
+    if [ -f $CLAM_CF ]
+    then
+        sed -ie "s/HTTPProxy=./HTTPProxy=0/" ${CLAM_CF}
+    fi
+    ;;
+
+  check*)
+    if [ ! -f $CLAM_CF ]
+    then CLAM_CHECK="Not Found"
+    elif [ $( grep -ci "^HTTPProxy=2" $CLAM_CF 2>/dev/null ) -eq 0 ]
+      then CLAM_CHECK=Off
+      else CLAM_CHECK=On
+    fi
+    echo "ClamTk: $CLAM_CHECK"
+    ;;
+esac

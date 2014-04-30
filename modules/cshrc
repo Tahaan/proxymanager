@@ -36,12 +36,12 @@ case "$1" in
     then
         grep -vi "^[^#]*_proxy" $CSH_CF > $TEMPFILE
         cat $PM_INSTALL_DIR/templates/disable_cshrc >> $TEMPFILE
-        mv $TEMPFILE $CSH_CF
+        cp $TEMPFILE $CSH_CF
     fi
     echo "    Restart terminal to affect"
     ;;
 
-  check)   
+  check*)   
     if [ ! -f $CSH_CF ]
     then CSH_CHECK="Not Found"
     elif [ $( grep -ci "^[^#]*setenv .*_proxy .*http.*" $CSH_CF 2>/dev/null ) -eq 0 ]

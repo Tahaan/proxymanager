@@ -24,7 +24,7 @@ case "$1" in
     grep -v "^[^#]*_proxy" $RWGET_CF > $TEMPFILE
     mv $TEMPFILE $RWGET_CF
     ;;
-  check)
+  check*)
     if [ ! -f $RWGET_CF ]
     then RWGET_CHECK="Not Found"
     elif [ $( grep -c "^[^#]*_proxy" $RWGET_CF 2>/dev/null ) -eq 0 ]

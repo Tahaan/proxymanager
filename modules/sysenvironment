@@ -35,7 +35,7 @@ case "$1" in
        echo "    Logout and back or restart system may be required"
     fi
     ;;
-  check)
+  check*)
     if [ ! -f $SYSENV_CF ]
     then SYSENV_CHECK="Not Found"
     elif [ $( grep -ci "^[^#]*_proxy=." $SYSENV_CF 2>/dev/null ) -eq 0 ]

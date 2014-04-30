@@ -22,7 +22,7 @@ case "$1" in
     which git > /dev/null || exit
     git config --global http.proxy ""
     ;;
-  check)
+  check*)
     if ! which git > /dev/null
     then GIT_CHECK="Not Found"
     elif [ $( git config --global http.proxy | grep -c http ) -eq 0 ]

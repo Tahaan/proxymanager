@@ -42,7 +42,7 @@ case "$1" in
     echo "    Restart terminal to affect"
     ;;
 
-  check)   
+  check*)   
     if [ ! -f $RCSH_CF ]
     then RCSH_CHECK="Not Found"
     elif [ $( grep -ci "^[^#]*setenv .*_proxy .*http.*" $RCSH_CF 2>/dev/null ) -eq 0 ]

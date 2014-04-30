@@ -32,16 +32,16 @@ case "$1" in
     ;;
   off)
     echo Disabling for Bash
-    if [ -f $BASSH_CF ]
+    if [ -f $BASH_CF ]
     then
         grep -vi "^[^#]*_proxy" $BASH_CF > $TEMPFILE
         cat $PM_INSTALL_DIR/templates/disable_bashrc >> $TEMPFILE
-        mv $TEMPFILE $BASH_CF
+        cp $TEMPFILE $BASH_CF
     fi
     echo "    Restart terminal to affect change"
     ;;
 
-  check)
+  check*)
     if [ ! -f $BASH_CF ]
     then BASH_CHECK="Not Found"
     elif [ $( grep -ci "^[^#]*_proxy=" $BASH_CF 2>/dev/null ) -eq 0 ]

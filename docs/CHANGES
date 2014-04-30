@@ -1,5 +1,13 @@
 History / log of changes in ProxyManager
 
+2014-04-15
+Fixed issue nr #23, affected modules: bashrc, cshrc, curlrc, filezilla, marble, s3cmd, vlc, wgetrc
+Fixed issue $14 - non-graceful handling of situation when no modules are enabled.
+New Module clamtk: ClamTk GUI preferences update module.
+New Module youtube-dl: Set default proxy for youtube-dl CLI program.
+Include an example proxy.pac file for Firefox (needs the Network address and Mask to be configured)
+
+
 2014-04-14 (v0.9.7)
 Marble now checks for processes owned by the executing user.
 All modules using a TEMPFILE updated to use a shared function to generate 
