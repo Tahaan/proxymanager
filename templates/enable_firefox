@@ -1,0 +1,12 @@
+user_pref("network.proxy.autoconfig_url", "file:///home/johan/.mozilla/proxy.pac");
+user_pref("network.proxy.ftp", "PMHOSTTAG");
+user_pref("network.proxy.ftp_port", PMPORTTAG);
+user_pref("network.proxy.http", "PMHOSTTAG");
+user_pref("network.proxy.http_port", PMPORTTAG);
+user_pref("network.proxy.no_proxies_on", "localhost, 127.0.0.1, 172.21.0.0/16, tmgcptv01");
+user_pref("network.proxy.share_proxy_settings", true);
+user_pref("network.proxy.socks", "PMHOSTTAG");
+user_pref("network.proxy.socks_port", PMPORTTAG);
+user_pref("network.proxy.ssl", "PMHOSTTAG");
+user_pref("network.proxy.ssl_port", PMPORTTAG);
+user_pref("network.proxy.type", 2);

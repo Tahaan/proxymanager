@@ -1,12 +1,17 @@
 History / log of changes in ProxyManager
 
-2014-04-15
-Fixed issue nr #23, affected modules: bashrc, cshrc, curlrc, filezilla, marble, s3cmd, vlc, wgetrc
-Fixed issue $14 - non-graceful handling of situation when no modules are enabled.
+2014-05-30 (v0.9.9)
+New Module: zygrib for the zyGrib GRIB weather data viewer (Currently limited a to 
+  pre-configured proxy host)
+Allow Templates files to be annotated with Comments (Lines starting with the Hash 
+  character "#" are not written to the target configuration file).
+
+2014-04-30 (v0.9.8)
+Fixed issue #23, affected modules: bashrc, cshrc, curlrc, filezilla, marble, s3cmd, vlc, wgetrc
+Fixed issue #14 - non-graceful handling of situation when no modules are enabled.
 New Module clamtk: ClamTk GUI preferences update module.
 New Module youtube-dl: Set default proxy for youtube-dl CLI program.
 Include an example proxy.pac file for Firefox (needs the Network address and Mask to be configured)
-
 
 2014-04-14 (v0.9.7)
 Marble now checks for processes owned by the executing user.

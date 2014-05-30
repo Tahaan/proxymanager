@@ -1,0 +1,66 @@
+#!/bin/sh
+# This file is part of ProxyManager
+# Copyright 2013 Johan Hartzenberg 
+# ProxyManager is distributed under the terms of the GNU General Public License
+# See the included README file for contact and additional information
+# See the included COPYING file for licensing information
+
+# ProxyManager module for zyGrib GRIB file downloader and viewer
+# This script updates the zyGrib Config file to enable/disable the Proxy.
+
+# NOTICE!  IMPORTANT LIMITATION
+# The Included zyGrib Enable template have the Proxy host name hardcoded for 
+# "localhost" only.
+# Only the Port can be controlled
+# 
+# This is because zyGrib for some unknown reason obfuscates the hostname.
+#
+# zyGrib encrypts "localhost" to appear like the string "X15bBAhcCksR" 
+#
+# If you need to use a Proxy server other than "localhost" you need 
+# to fix it in the Zygrib enable template file. 
+
+# The work-around procedure is:  
+# 1. Configure zyGrib manually to use the correct hostname.  This will let 
+#    zyGrib "encrypt" the hostname in its configuration file.
+# 2. Copy the encrypted hostname stored from the zyGrib Configuration file to
+#      the ProxyManager Enable module.  The zyGrib configuration file lives at
+#      ~/.config/zyGrib.conf
+#      The template to be updated is store in the templates/enable_zygrib file
+#       under the ProxyManager isntall directory
+
+
+
+ZYG_CF=$PM_USERHOME/.config/zyGrib.conf
+
+. $PM_INSTALL_DIR/modules/.sharedfunctions
+GetUniqueTempFile zyg
+
+case "$1" in
+  on)
+    echo Enabling for zyGrib
+    if [ -f $ZYG_CF ]
+    then
+       grep -v http.*Proxy ${ZYG_CF} > $TEMPFILE
+       ParseTemplate $PM_INSTALL_DIR/templates/enable_zygrib >> $TEMPFILE
+       cp $TEMPFILE ${ZYG_CF}
+    fi
+    ;;
+  off)
+    echo Disabling for zyGrib
+    if [ -f $ZYG_CF ]
+    then
+        sed -ie "s/httpUseProxy=true/HTTPProxy=false/" ${ZYG_CF}
+    fi
+    ;;
+  
+  check*)
+    if [ ! -f $ZYG_CF ]
+    then ZYG_CHECK="Not Found"
+    elif [ $( grep -ci "^httpUseProxy=true" $ZYG_CF 2>/dev/null ) -eq 0 ]
+      then ZYG_CHECK=Off
+      else ZYG_CHECK=On
+    fi
+    echo "zyGrib: $ZYG_CHECK"
+    ;;
+esac
